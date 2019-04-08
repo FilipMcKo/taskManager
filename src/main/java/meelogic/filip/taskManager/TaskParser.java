@@ -11,9 +11,9 @@ public class TaskParser {
 
     private static final String FILE_PATH = "sampleTasks"; //hardcoded
 
-    //TODO: Optymalizacja
 
     public Map<Integer,Task> getSampleTaskMap() {
+        //TODO: Optymalizacja
         Map<Integer,Task> taskMap = new HashMap<>();
         List<Task> taskList = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
