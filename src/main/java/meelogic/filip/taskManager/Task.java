@@ -1,28 +1,28 @@
 package meelogic.filip.taskManager;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 @Data
 public class Task {
+
+    final static AtomicInteger counter = new AtomicInteger();
+
     private Integer id;
 
     private String name;
 
     private State currentState;
 
-    private Double progress;
+    private Double progressPercentage;
 
-    public Task(Integer id, String name, State currentState, Double progress) {
-        this.id = id;
+    Task(String name) {
+        this.id=counter.incrementAndGet();
         this.name = name;
-        this.currentState = currentState;
-        this.progress = progress;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+        this.currentState = State.NONE;
+        this.progressPercentage = 0.0;
     }
 
 }
