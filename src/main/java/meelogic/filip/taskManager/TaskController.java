@@ -10,9 +10,13 @@ import java.util.Map;
 
 @RestController
 public class TaskController {
+    
+    private final Map<Integer, Task> taskMap;
 
-    @Autowired
-    private Map<Integer,Task> sampleTaskMap;
+    public TaskController(Map<Integer, Task> taskMap) {
+        this.taskMap = taskMap;
+    }
+
 
     @RequestMapping("/")
     public String index(){
@@ -20,12 +24,12 @@ public class TaskController {
     }
 
     @GetMapping("/tasks")
-    public String getAllTasks(){
-        return this.sampleTaskMap.toString();
+    public Map<Integer,Task> getAllTasks(){
+        return taskMap;
     }
 
     @GetMapping("/tasks/{id}")
-    public String getTask(@PathVariable Integer id){
-        return this.sampleTaskMap.get(id).toString();
+    public Task getTask(@PathVariable Integer id){
+        return taskMap.get(id);
     }
 }

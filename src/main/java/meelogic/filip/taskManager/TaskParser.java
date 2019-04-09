@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+@Deprecated
 public class TaskParser {
 
     private static final String FILE_PATH = "sampleTasks"; //hardcoded
