@@ -1,5 +1,7 @@
-package meelogic.filip.taskManager;
+package meelogic.filip.taskManager.controllers;
 
+import meelogic.filip.taskManager.entities.Task;
+import meelogic.filip.taskManager.services.TaskProcessor;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 

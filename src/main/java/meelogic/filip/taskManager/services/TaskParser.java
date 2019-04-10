@@ -1,7 +1,7 @@
-package meelogic.filip.taskManager;
+package meelogic.filip.taskManager.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.context.annotation.Bean;
+import meelogic.filip.taskManager.entities.Task;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,9 +10,8 @@ import java.util.*;
 @Deprecated
 public class TaskParser {
 
-    private static final String FILE_PATH = "sampleTasks"; //hardcoded
-
-    public Map<Integer,Task> getSampleTaskMap() {
+    private static final String FILE_PATH = "sampleTasks";
+    public Map<Integer, Task> getSampleTaskMap() {
         //TODO: Optymalizacja
         Map<Integer,Task> taskMap = new HashMap<>();
         List<Task> taskList = new ArrayList<>();

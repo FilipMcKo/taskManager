@@ -1,4 +1,4 @@
-package meelogic.filip.taskManager;
+package meelogic.filip.taskManager.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
