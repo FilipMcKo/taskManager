@@ -9,7 +9,6 @@ import java.util.List;
 public class TaskManagerApplication {
 
     public static void main(String[] args) {
-        //List<Task> taskList = TaskParser.parseTasksFromJson("sampleTasks");
         SpringApplication.run(TaskManagerApplication.class, args);
     }
 

@@ -1,17 +1,17 @@
 package meelogic.filip.taskManager;
 
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
 @RestController
 public class TaskController {
     
     private final Map<Integer, Task> taskMap;
+    private TaskProcessor taskProcessor;
 
-
-    public TaskController(Map<Integer, Task> taskMap) {
+    public TaskController(Map<Integer, Task> taskMap, TaskProcessor taskProcessor) {
         this.taskMap = taskMap;
+        this.taskProcessor = taskProcessor;
     }
 
     @RequestMapping("/")
@@ -37,6 +37,7 @@ public class TaskController {
     @PostMapping("/tasks")
     public Task newtask(@RequestBody Task newTask) {
         newTask.setId(Task.counter.incrementAndGet());
+        taskProcessor.startProcessing(newTask);
         taskMap.put(Task.counter.get(),newTask);
         return newTask;
     }
