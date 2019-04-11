@@ -9,8 +9,8 @@ import java.util.List;
 @Repository
 public class TaskRepository {
 
-    @Autowired // to powinno zainicjować funckję initDataBase z SampleDatabaseConfig i zwrócić mi samplowego taskList'a który od teraz ma być moją bazą danych
-            List<Task> taskList;
+    @Autowired
+    private List<Task> taskList;
 
     public List<Task> getTaskList() {
         return this.taskList;

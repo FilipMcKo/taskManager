@@ -16,8 +16,8 @@ public class SampleDataBaseConfig {
     //to powinno inicjować przykładową bazę danych w potaci listy. Ta lista powinna być w kontenrze IoC (ApplicationContext)
     public List<Task> initDataBase() {
         List<Task> taskList = new LinkedList<>();
-        taskList.add(new Task(1,"Task1", State.NONE, 0.0,null));
-        taskList.add(new Task(2,"Task2", State.NONE, 0.0,null));
+        taskList.add(new Task(1,"Task1", "Sample task nr one", State.NONE, 0.0,null));
+        taskList.add(new Task(2,"Task2","Sample task nr one", State.NONE, 0.0,null));
         log.info("Sample tasks added");
         return taskList;
     }

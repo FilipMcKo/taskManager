@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class Task {
     private Integer id;
     private String name;
+    private String description;
     private State currentState;
     private Double progressPercentage;
     private Long taskBeginTime;

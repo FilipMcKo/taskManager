@@ -8,6 +8,7 @@ import lombok.Data;
 public class TaskDTO {
     private Integer id;
     private String name;
+    private String description;
     private State currentState;
     private Double progressPercentage;
 }

@@ -4,10 +4,23 @@ import meelogic.filip.taskManager.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * Obowiązki tego serwisu:
+ * 1. pozyskiwanie z task repository listy obiektów
+ * 2. wykonywanie na tej liście CRUDowych operacji
+ * 3. nadawanie id'ków taskom
+ * 4. aktualizowanie procentowego stanu zaawansowania tasków
+ *
+ * Cel jest taki aby klasa TaskRepository udostępniała dane w postaci listy tak żebym tu nie musiał
+ * już nic zmieniać, bo ta klasa ma po prostu przyjmować listę
+ */
+
 
 @Component
 public class Service {
@@ -20,6 +33,8 @@ public class Service {
     @Autowired
     private TaskRepository taskRepository;
 
+    private List<Task> taskList = taskRepository.getTaskList();
+
     private void updateTask(Task task) {
         Long begin = task.getTaskBeginTime();
         if (begin == null) {
@@ -31,7 +46,8 @@ public class Service {
             task.setProgressPercentage(100.0);
             return;
         }
-        task.setProgressPercentage((double) ((currentDuration / TaskDuration.regular) * 100));
+        double currentPercentage = BigDecimal.valueOf((double)currentDuration /(double) TaskDuration.regular * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        task.setProgressPercentage(currentPercentage);
     }
 
     private void updateTasks() {
@@ -40,17 +56,10 @@ public class Service {
         }
     }
 
-    //w tej konfiguracji mam sytuację w której w każdej metodzie taskList jest inicjowany na nowo za pomocą taskRepository
-    //czy to jest dobrze czy źle? być może dobrze
-    // trochę nie wiem jak to zrobić inaczej bo jak inicjowałem to w konstruktorze to się burzył - pewnie dlatego że to jest lazy
-    // i jest realizowane DI dopiero jak trzeba, a w innym przypadku ta referencja jest nullem
-    private List<Task> taskList;
-
     public List<TaskDTO> getAllTasksDTOs() {
         this.updateTasks();
         List<TaskDTO> taskDTOList = new LinkedList<>();
-        this.taskList = taskRepository.getTaskList();
-        for (Task task : taskList) {
+        for (Task task : this.taskList) {
             taskDTOList.add(TaskDTOBuilder.taskToTaskDTO(task));
         }
         return taskDTOList;
@@ -58,8 +67,7 @@ public class Service {
 
     public TaskDTO getTaskDTObyId(Integer id) {
         this.updateTasks();
-        this.taskList = taskRepository.getTaskList();
-        Optional<Task> taskOptional = taskList.stream().filter(t -> t.getId().equals(id)).findAny();
+        Optional<Task> taskOptional = this.taskList.stream().filter(t -> t.getId().equals(id)).findAny();
         if (taskOptional.isPresent()) {
             return TaskDTOBuilder.taskToTaskDTO(taskOptional.get());
         }
@@ -72,15 +80,19 @@ public class Service {
     }
 
     public void removeById(Integer id) {
-        taskRepository.removeById(id);
+        this.taskList.removeIf(task -> task.getId().equals(id));
     }
 
-    public void addNewTask(String taskName) {
+    public void addNewTask(TaskDAO taskDAO) {
         Integer id = counter.getAndIncrement();
-        taskRepository.add(new Task(id, taskName, State.NONE, 0.0, null));
+        this.taskList.add(new Task(id, taskDAO.getName(), taskDAO.getDecription(), State.NONE, 0.0, null));
     }
 
     public void renameTask(String newName, Integer id) {
-        taskRepository.renameTask(newName, id);
+        for (Task task : this.taskList) {
+            if(task.getId().equals(id)){
+                task.setName(newName);
+            }
+        }
     }
 }

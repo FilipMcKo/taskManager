@@ -7,7 +7,7 @@ import meelogic.filip.taskManager.entities.TaskDTO;
 public class TaskDTOBuilder {
 
    public static TaskDTO taskToTaskDTO(Task task){
-       return new TaskDTO(task.getId(),task.getName(),task.getCurrentState(),task.getProgressPercentage());
+       return new TaskDTO(task.getId(),task.getName(),task.getDescription(),task.getCurrentState(),task.getProgressPercentage());
    }
 
 }
