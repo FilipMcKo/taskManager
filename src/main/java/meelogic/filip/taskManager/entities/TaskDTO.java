@@ -2,12 +2,10 @@ package meelogic.filip.taskManager.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Task {
+public class TaskDTO {
     private Integer id;
     private String name;
     private State currentState;

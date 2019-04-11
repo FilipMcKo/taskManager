@@ -1,38 +1,34 @@
 package meelogic.filip.taskManager.controllers;
 
-import meelogic.filip.taskManager.entities.Task;
-import meelogic.filip.taskManager.services.TaskProcessor;
+import meelogic.filip.taskManager.entities.TaskDTO;
+import meelogic.filip.taskManager.services.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 public class TaskController {
-    
-    private final Map<Integer, Task> taskMap;
-    private TaskProcessor taskProcessor;
 
-    public TaskController(Map<Integer, Task> taskMap, TaskProcessor taskProcessor) {
-        this.taskMap = taskMap;
-        this.taskProcessor = taskProcessor;
-    }
-
-    @RequestMapping("/")
-    public String index(){
-        return "Welcome to Task Manager!";
-    }
+    @Autowired
+    Service service;
 
     @GetMapping("/tasks")
-    public Map<Integer,Task> getAllTasks(){
-        return taskMap;
+    public List<TaskDTO> getAllTasks() {
+        return service.getAllTasks();
     }
 
-    @GetMapping("/tasks/{id}")
-    public Task getTask(@PathVariable Integer id){
+
+
+
+
+
+    /*@GetMapping("/tasks/{id}")
+    public Task getTask(@PathVariable Integer id) {
         return taskMap.get(id);
     }
 
     @DeleteMapping("/tasks/{id}")
-    public void deleteTask(@PathVariable Integer id){
+    public void deleteTask(@PathVariable Integer id) {
         taskMap.remove(id);
     }
 
@@ -40,21 +36,20 @@ public class TaskController {
     public Task newtask(@RequestBody Task newTask) {
         newTask.setId(Task.counter.incrementAndGet());
         taskProcessor.startProcessing(newTask);
-        taskMap.put(Task.counter.get(),newTask);
+        taskMap.put(Task.counter.get(), newTask);
         return newTask;
     }
 
     @PutMapping("/tasks/{id}")
-    public Task replaceTask(@RequestBody Task newTask, @PathVariable Integer id){
-        if(taskMap.containsKey(id)){
-            taskMap.replace(id,newTask);
-        }
-        else {
+    public Task replaceTask(@RequestBody Task newTask, @PathVariable Integer id) {
+        if (taskMap.containsKey(id)) {
+            taskMap.replace(id, newTask);
+        } else {
             newTask.setId(id);
             taskMap.put(id, newTask);
         }
 
         return newTask;
-    }
+    }*/
 
 }

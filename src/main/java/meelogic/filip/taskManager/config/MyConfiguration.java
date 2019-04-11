@@ -1,29 +1,24 @@
 package meelogic.filip.taskManager.config;
 
 import lombok.extern.slf4j.Slf4j;
+import meelogic.filip.taskManager.entities.State;
 import meelogic.filip.taskManager.entities.Task;
-import meelogic.filip.taskManager.services.TaskProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 @Configuration
 @Slf4j
 public class MyConfiguration {
 
     @Bean
-    public Map<Integer, Task> initDataBase() {
-        Map<Integer, Task> taskMap = new HashMap<>();
-        taskMap.put(1, new Task("Task1"));
-        taskMap.put(2, new Task("Task2"));
+    public List<Task> initDataBase() {
+        List<Task> taskList = new LinkedList<>();
+        taskList.add(new Task(1,"Task1", State.NONE, 0.0,null));
+        taskList.add(new Task(2,"Task2", State.NONE, 0.0,null));
         log.info("Sample tasks added");
-        return taskMap;
-    }
-
-    @Bean
-    public TaskProcessor initTaskProcessor() {
-        return new TaskProcessor();
+        return taskList;
     }
 }
 

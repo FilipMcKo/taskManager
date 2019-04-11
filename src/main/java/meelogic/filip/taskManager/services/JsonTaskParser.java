@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Deprecated
-public class TaskParser {
+public class JsonTaskParser {
 
     private static final String FILE_PATH = "sampleTasks";
     public Map<Integer, Task> getSampleTaskMap() {
