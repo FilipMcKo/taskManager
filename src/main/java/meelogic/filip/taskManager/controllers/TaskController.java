@@ -1,55 +1,56 @@
 package meelogic.filip.taskManager.controllers;
 
 import meelogic.filip.taskManager.entities.TaskDTO;
+import meelogic.filip.taskManager.entities.TaskRepository;
 import meelogic.filip.taskManager.services.Service;
+import meelogic.filip.taskManager.services.TaskProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 public class TaskController {
 
     @Autowired
-    Service service;
+    private Service service;
+    @Autowired
+    private TaskProcessor taskProcessor;
 
     @GetMapping("/tasks")
     public List<TaskDTO> getAllTasks() {
-        return service.getAllTasks();
+        return service.getAllTasksDTOs();
     }
 
-
-
-
-
-
-    /*@GetMapping("/tasks/{id}")
-    public Task getTask(@PathVariable Integer id) {
-        return taskMap.get(id);
+    /**
+     * Na razie zwracam kod 200 z pustym JSONem jeżeli brakuje takiego id w bazie
+     * <p>
+     * później mogę dodać info w JSONie o tym co się stało
+     */
+    @GetMapping("/tasks/{id}")
+    public TaskDTO getTaskDTO(@PathVariable Integer id) {
+        return service.getTaskDTObyId(id);
     }
+
 
     @DeleteMapping("/tasks/{id}")
     public void deleteTask(@PathVariable Integer id) {
-        taskMap.remove(id);
+        service.removeById(id);
     }
 
-    @PostMapping("/tasks")
-    public Task newtask(@RequestBody Task newTask) {
-        newTask.setId(Task.counter.incrementAndGet());
-        taskProcessor.startProcessing(newTask);
-        taskMap.put(Task.counter.get(), newTask);
-        return newTask;
+    @PostMapping("/tasks/newtask")
+    public void newtask(@RequestBody String taskName) {
+        service.addNewTask(taskName);
     }
 
-    @PutMapping("/tasks/{id}")
-    public Task replaceTask(@RequestBody Task newTask, @PathVariable Integer id) {
-        if (taskMap.containsKey(id)) {
-            taskMap.replace(id, newTask);
-        } else {
-            newTask.setId(id);
-            taskMap.put(id, newTask);
-        }
+    @PutMapping("/tasks/{id}/rename")
+    public void renameTask(@RequestBody String newName, @PathVariable Integer id) {
+        service.renameTask(newName, id);
+    }
 
-        return newTask;
-    }*/
+    @PutMapping("/tasks/{id}/start")
+    public void startTask(@PathVariable Integer id) {
+        taskProcessor.startProcessing(id);
+    }
 
 }

@@ -10,5 +10,4 @@ public class TaskDTO {
     private String name;
     private State currentState;
     private Double progressPercentage;
-    private Long taskBeginTime;
 }
