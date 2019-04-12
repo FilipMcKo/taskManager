@@ -1,5 +1,6 @@
 package meelogic.filip.taskManager.entities;
 
+import meelogic.filip.taskManager.entities.internal.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

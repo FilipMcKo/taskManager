@@ -1,7 +1,7 @@
 package meelogic.filip.taskManager.services;
 
-import meelogic.filip.taskManager.entities.Task;
-import meelogic.filip.taskManager.entities.TaskDTO;
+import meelogic.filip.taskManager.entities.internal.Task;
+import meelogic.filip.taskManager.entities.external.TaskDTO;
 
 public class TaskDTOBuilder {
 

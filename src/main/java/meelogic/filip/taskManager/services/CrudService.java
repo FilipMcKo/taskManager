@@ -1,6 +1,14 @@
 package meelogic.filip.taskManager.services;
 
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 import meelogic.filip.taskManager.entities.*;
+import meelogic.filip.taskManager.entities.external.TaskCreator;
+import meelogic.filip.taskManager.entities.external.TaskDTO;
+import meelogic.filip.taskManager.entities.internal.State;
+import meelogic.filip.taskManager.entities.internal.Task;
+import meelogic.filip.taskManager.entities.internal.TaskDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
@@ -19,12 +27,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 @Component
-public class Service {
+public class CrudService {
 
     private static final AtomicInteger counter = new AtomicInteger(3);
     @Autowired
     private TaskRepository taskRepository;
     private List<Task> taskList;
+    private MapperFacade mapperFacade;
+
+    CrudService(){
+        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+        mapperFactory.classMap(Task.class, TaskDTO.class).exclude("taskBeginTime").byDefault().register();
+        mapperFacade = mapperFactory.getMapperFacade();
+    }
 
     private void updateTask(Task task) {
         Long begin = task.getTaskBeginTime();
@@ -62,10 +77,7 @@ public class Service {
         this.taskList = taskRepository.getTaskList();
         this.updateTasks();
         Optional<Task> taskOptional = this.taskList.stream().filter(t -> t.getId().equals(id)).findAny();
-        if (taskOptional.isPresent()) {
-            return TaskDTOBuilder.taskToTaskDTO(taskOptional.get());
-        }
-        return null;
+        return taskOptional.map(task -> this.mapperFacade.map(task, TaskDTO.class)).orElse(null);
     }
 
     public Task getTaskById(Integer id) {
@@ -79,10 +91,10 @@ public class Service {
         this.taskList.removeIf(task -> task.getId().equals(id));
     }
 
-    public void addNewTask(TaskDAO taskDAO) {
+    public void addNewTask(TaskCreator taskCreator) {
         this.taskList = taskRepository.getTaskList();
         Integer id = counter.getAndIncrement();
-        this.taskList.add(new Task(id, taskDAO.getName(), taskDAO.getDecription(), State.NONE, 0.0, null));
+        this.taskList.add(new Task(id, taskCreator.getName(), taskCreator.getDecription(), State.NONE, 0.0, null));
     }
 
     public void renameTask(String newName, Integer id) {

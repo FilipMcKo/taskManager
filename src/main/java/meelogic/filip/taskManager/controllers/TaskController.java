@@ -1,9 +1,9 @@
 package meelogic.filip.taskManager.controllers;
 
-import meelogic.filip.taskManager.entities.TaskDAO;
-import meelogic.filip.taskManager.entities.TaskDTO;
-import meelogic.filip.taskManager.services.Service;
-import meelogic.filip.taskManager.services.TaskProcessor;
+import meelogic.filip.taskManager.entities.external.TaskCreator;
+import meelogic.filip.taskManager.entities.external.TaskDTO;
+import meelogic.filip.taskManager.services.CrudService;
+import meelogic.filip.taskManager.services.TaskProcessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,43 +13,43 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-    private Service service;
+    private CrudService crudService;
     @Autowired
-    private TaskProcessor taskProcessor;
+    private TaskProcessorService taskProcessorService;
 
     @GetMapping("/tasks")
     public List<TaskDTO> getAllTasks() {
-        return service.getAllTasksDTOs();
+        return crudService.getAllTasksDTOs();
     }
 
     @GetMapping("/tasks/{id}")
     public TaskDTO getTaskDTO(@PathVariable Integer id) {
-        return service.getTaskDTObyId(id);
+        return crudService.getTaskDTObyId(id);
     }
 
     @DeleteMapping("/tasks/{id}")
     public void deleteTask(@PathVariable Integer id) {
-        service.removeById(id);
+        crudService.removeById(id);
     }
 
     @PostMapping("/tasks/newtask")
-    public void newtask(@RequestBody TaskDAO taskDAO) {
-        service.addNewTask(taskDAO);
+    public void newtask(@RequestBody TaskCreator taskCreator) {
+        crudService.addNewTask(taskCreator);
     }
 
     @PutMapping("/tasks/{id}/rename")
     public void renameTask(@RequestBody String newName, @PathVariable Integer id) {
-        service.renameTask(newName, id);
+        crudService.renameTask(newName, id);
     }
 
     @PutMapping("/tasks/{id}/start")
     public void startTask(@PathVariable Integer id) {
-        taskProcessor.startProcessing(id);
+        taskProcessorService.startProcessing(id);
     }
 
     @PutMapping("/tasks/{id}/cancel")
     public void cancelTask(@PathVariable Integer id) {
-        taskProcessor.cancelProcessing(id);
+        taskProcessorService.cancelProcessing(id);
     }
 
 }
