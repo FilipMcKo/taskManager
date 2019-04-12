@@ -5,8 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-//tutaj będzie miało miejsce łącznie się z bazą danych i parsowanie encji na listę, która będzie shareowana dalej
-//tym sposobem jest to jedyna klasa wymagająca przebudowy przy wdrażaniu bazy danych
+/**
+ * This class should be linked with database in creation of next feature.
+ * It should refresh a DB and taskList content every time getTaskList() is called
+ */
 @Repository
 public class TaskRepository {
 

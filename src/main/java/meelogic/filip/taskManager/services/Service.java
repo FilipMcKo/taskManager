@@ -11,29 +11,20 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Obowiązki tego serwisu:
- * 1. pozyskiwanie z task repository listy obiektów
- * 2. wykonywanie na tej liście CRUDowych operacji
- * 3. nadawanie id'ków taskom
- * 4. aktualizowanie procentowego stanu zaawansowania tasków
- *
- * Cel jest taki aby klasa TaskRepository udostępniała dane w postaci listy tak żebym tu nie musiał
- * już nic zmieniać, bo ta klasa ma po prostu przyjmować listę
+ * Duties of this service:
+ * 1. getting a taskList from taskRepository bean
+ * 2. making CRUD operations within this taskList
+ * 3. giving proper id to task objects
+ * 4. updating percentage progress every time it is asked of something
  */
-
 
 @Component
 public class Service {
 
-    //początkowa wartość jest równa 3 przez to, że w sampleDAtaBaseConfig dodaję 2 obiekty
-    //docelowo ta wartość ma być równa 0 i będzie się zawsze ładnie inkrementować przy dodawania nowego taska
-    // i będę miał pewność, że nie wystąpią powtórzenia indeksu
     private static final AtomicInteger counter = new AtomicInteger(3);
-
     @Autowired
     private TaskRepository taskRepository;
-
-    private List<Task> taskList = taskRepository.getTaskList();
+    private List<Task> taskList;
 
     private void updateTask(Task task) {
         Long begin = task.getTaskBeginTime();
@@ -46,17 +37,19 @@ public class Service {
             task.setProgressPercentage(100.0);
             return;
         }
-        double currentPercentage = BigDecimal.valueOf((double)currentDuration /(double) TaskDuration.regular * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) TaskDuration.regular * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         task.setProgressPercentage(currentPercentage);
     }
 
     private void updateTasks() {
+        this.taskList = taskRepository.getTaskList();
         for (Task task : taskRepository.getTaskList()) {
             this.updateTask(task);
         }
     }
 
     public List<TaskDTO> getAllTasksDTOs() {
+        this.taskList = taskRepository.getTaskList();
         this.updateTasks();
         List<TaskDTO> taskDTOList = new LinkedList<>();
         for (Task task : this.taskList) {
@@ -66,6 +59,7 @@ public class Service {
     }
 
     public TaskDTO getTaskDTObyId(Integer id) {
+        this.taskList = taskRepository.getTaskList();
         this.updateTasks();
         Optional<Task> taskOptional = this.taskList.stream().filter(t -> t.getId().equals(id)).findAny();
         if (taskOptional.isPresent()) {
@@ -75,22 +69,26 @@ public class Service {
     }
 
     public Task getTaskById(Integer id) {
+        this.taskList = taskRepository.getTaskList();
         this.updateTasks();
         return taskList.stream().filter(t -> t.getId().equals(id)).findAny().orElse(null);
     }
 
     public void removeById(Integer id) {
+        this.taskList = taskRepository.getTaskList();
         this.taskList.removeIf(task -> task.getId().equals(id));
     }
 
     public void addNewTask(TaskDAO taskDAO) {
+        this.taskList = taskRepository.getTaskList();
         Integer id = counter.getAndIncrement();
         this.taskList.add(new Task(id, taskDAO.getName(), taskDAO.getDecription(), State.NONE, 0.0, null));
     }
 
     public void renameTask(String newName, Integer id) {
+        this.taskList = taskRepository.getTaskList();
         for (Task task : this.taskList) {
-            if(task.getId().equals(id)){
+            if (task.getId().equals(id)) {
                 task.setName(newName);
             }
         }

@@ -12,8 +12,7 @@ import java.util.List;
 @Slf4j
 public class SampleDataBaseConfig {
 
-    @Bean //czy ta adnotacja jest konieczna skoro jest adnotacja @Configuration? chyba tak
-    //to powinno inicjować przykładową bazę danych w potaci listy. Ta lista powinna być w kontenrze IoC (ApplicationContext)
+    @Bean
     public List<Task> initDataBase() {
         List<Task> taskList = new LinkedList<>();
         taskList.add(new Task(1,"Task1", "Sample task nr one", State.NONE, 0.0,null));

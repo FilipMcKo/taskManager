@@ -13,18 +13,18 @@ public class TaskProcessor {
     @Autowired
     private Service service;
 
-    public void startProcessing(Integer id){
+    public void startProcessing(Integer id) {
         Task task = service.getTaskById(id);
-        if(task.getCurrentState().equals(State.RUNNING)){
+        if (task.getCurrentState().equals(State.RUNNING)) {
             return;
         }
         task.setTaskBeginTime(System.currentTimeMillis());
         task.setCurrentState(State.RUNNING);
     }
 
-    public void cancelProcessing(Integer id){
+    public void cancelProcessing(Integer id) {
         Task task = service.getTaskById(id);
-        if(task.getCurrentState().equals(State.RUNNING)){
+        if (task.getCurrentState().equals(State.RUNNING)) {
             task.setCurrentState(State.CANCELLED);
             task.setProgressPercentage(0.0);
             task.setTaskBeginTime(null);

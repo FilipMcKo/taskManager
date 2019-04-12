@@ -11,9 +11,9 @@ import java.util.*;
 public class JsonTaskParser {
 
     private static final String FILE_PATH = "sampleTasks";
+
     public Map<Integer, Task> getSampleTaskMap() {
-        //TODO: Optymalizacja
-        Map<Integer,Task> taskMap = new HashMap<>();
+        Map<Integer, Task> taskMap = new HashMap<>();
         List<Task> taskList = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         File tasksFile = new File(FILE_PATH);
@@ -22,9 +22,9 @@ public class JsonTaskParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i <taskList.size(); i++) {
+        for (int i = 0; i < taskList.size(); i++) {
             taskList.get(i).setId(i);
-            taskMap.put(i,taskList.get(i));
+            taskMap.put(i, taskList.get(i));
         }
 
         return taskMap;
