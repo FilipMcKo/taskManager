@@ -2,8 +2,8 @@ package meelogic.filip.taskManager.controllers;
 
 import meelogic.filip.taskManager.entities.external.TaskCreator;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
-import meelogic.filip.taskManager.services.CrudService;
-import meelogic.filip.taskManager.services.TaskProcessorService;
+import meelogic.filip.taskManager.services.TaskCrudService;
+import meelogic.filip.taskManager.services.TaskStateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,43 +13,43 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-    private CrudService crudService;
+    private TaskCrudService taskCrudService;
     @Autowired
-    private TaskProcessorService taskProcessorService;
+    private TaskStateService taskStateService;
 
     @GetMapping("/tasks")
     public List<TaskDTO> getAllTasks() {
-        return crudService.getAllTasksDTOs();
+        return taskCrudService.getAllTaskDTOs();
     }
 
     @GetMapping("/tasks/{id}")
     public TaskDTO getTaskDTO(@PathVariable Integer id) {
-        return crudService.getTaskDTObyId(id);
+        return taskCrudService.getTaskDTObyId(id);
     }
 
     @DeleteMapping("/tasks/{id}")
     public void deleteTask(@PathVariable Integer id) {
-        crudService.removeById(id);
+        taskCrudService.removeTaskById(id);
     }
 
     @PostMapping("/tasks/newtask")
     public void newtask(@RequestBody TaskCreator taskCreator) {
-        crudService.addNewTask(taskCreator);
+        taskCrudService.addNewTask(taskCreator);
     }
 
     @PutMapping("/tasks/{id}/rename")
     public void renameTask(@RequestBody String newName, @PathVariable Integer id) {
-        crudService.renameTask(newName, id);
+        taskCrudService.renameTaskById(newName, id);
     }
 
     @PutMapping("/tasks/{id}/start")
     public void startTask(@PathVariable Integer id) {
-        taskProcessorService.startProcessing(id);
+        taskStateService.startProcessing(id);
     }
 
     @PutMapping("/tasks/{id}/cancel")
     public void cancelTask(@PathVariable Integer id) {
-        taskProcessorService.cancelProcessing(id);
+        taskStateService.cancelProcessing(id);
     }
 
 }

@@ -7,27 +7,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskProcessorService {
+public class TaskStateService {
     @Autowired
     private TaskRepository taskRepository;
-    @Autowired
-    private CrudService crudService;
 
     public void startProcessing(Integer id) {
-        Task task = crudService.getTaskById(id);
+        Task task = taskRepository.read(id);
         if (task.getCurrentState().equals(State.RUNNING)) {
             return;
         }
         task.setTaskBeginTime(System.currentTimeMillis());
         task.setCurrentState(State.RUNNING);
+        taskRepository.update(id,task);
     }
 
     public void cancelProcessing(Integer id) {
-        Task task = crudService.getTaskById(id);
+        Task task = taskRepository.read(id);
         if (task.getCurrentState().equals(State.RUNNING)) {
             task.setCurrentState(State.CANCELLED);
             task.setProgressPercentage(0.0);
             task.setTaskBeginTime(null);
+            taskRepository.update(id,task);
         }
     }
 }

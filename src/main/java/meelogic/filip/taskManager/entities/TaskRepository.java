@@ -13,10 +13,28 @@ import java.util.List;
 @Repository
 public class TaskRepository {
 
+
     @Autowired
     private List<Task> taskList;
 
     public List<Task> getTaskList() {
         return this.taskList;
+    }
+
+    public void create(Task task) {
+        this.taskList.add(task);
+    }
+
+    public void delete(Integer id) {
+        this.taskList.removeIf(task -> task.getId().equals(id));
+    }
+
+    public Task read(Integer id) {
+        return taskList.stream().filter(t -> t.getId().equals(id)).findAny().orElse(null);
+    }
+
+    public void update(Integer id, Task updatedTask) {
+        Task task = this.read(id);
+        task = updatedTask;
     }
 }
