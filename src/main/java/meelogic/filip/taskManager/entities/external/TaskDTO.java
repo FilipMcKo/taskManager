@@ -1,7 +1,8 @@
-package meelogic.filip.taskManager.entities;
+package meelogic.filip.taskManager.entities.external;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import meelogic.filip.taskManager.entities.internal.State;
 
 @AllArgsConstructor
 @Data
