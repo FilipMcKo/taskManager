@@ -5,6 +5,7 @@ import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.entities.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 @Component
 public class TaskStateService {

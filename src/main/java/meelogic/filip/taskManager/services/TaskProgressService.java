@@ -13,8 +13,7 @@ import java.math.BigDecimal;
 public class TaskProgressService {
 
     @Autowired
-    private
-    TaskRepository taskRepository;
+    private TaskRepository taskRepository;
 
     private void updateTaskProgress(Task task) {
         Long begin = task.getTaskBeginTime();
