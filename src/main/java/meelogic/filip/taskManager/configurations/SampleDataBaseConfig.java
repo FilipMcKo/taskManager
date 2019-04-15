@@ -1,8 +1,8 @@
 package meelogic.filip.taskManager.configurations;
 
 import lombok.extern.slf4j.Slf4j;
-import meelogic.filip.taskManager.entities.State;
-import meelogic.filip.taskManager.entities.Task;
+import meelogic.filip.taskManager.entities.internal.State;
+import meelogic.filip.taskManager.entities.internal.Task;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.util.LinkedList;

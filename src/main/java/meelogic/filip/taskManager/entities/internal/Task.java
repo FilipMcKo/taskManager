@@ -1,4 +1,4 @@
-package meelogic.filip.taskManager.entities;
+package meelogic.filip.taskManager.entities.internal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
