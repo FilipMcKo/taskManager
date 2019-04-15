@@ -33,8 +33,8 @@ public class TaskRepository {
         return taskList.stream().filter(t -> t.getId().equals(id)).findAny().orElse(null);
     }
 
-    public void update(Integer id, Task updatedTask) {
-        Task task = this.read(id);
+    public void update(Task updatedTask) {
+        Task task = this.read(updatedTask.getId());
         task = updatedTask;
     }
 }

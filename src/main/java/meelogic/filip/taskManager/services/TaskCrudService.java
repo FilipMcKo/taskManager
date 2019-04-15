@@ -46,11 +46,6 @@ public class TaskCrudService {
         return this.mapperFacade.map(task, TaskDTO.class);
     }
 
-    Task getTaskById(Integer id) {
-        taskProgressService.updateTasksProgress();
-        return this.taskRepository.read(id);
-    }
-
     public void removeTaskById(Integer id) {
         this.taskRepository.delete(id);
     }
@@ -62,6 +57,7 @@ public class TaskCrudService {
 
     public void renameTaskById(String newName, Integer id) {
         Task task = this.taskRepository.read(id);
-        this.taskRepository.update(id,task);
+        task.setName(newName);
+        this.taskRepository.update(task);
     }
 }

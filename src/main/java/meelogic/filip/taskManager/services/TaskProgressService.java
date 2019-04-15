@@ -25,11 +25,13 @@ public class TaskProgressService {
         if (currentDuration >= TaskDuration.regular) {
             task.setCurrentState(State.FINISHED);
             task.setProgressPercentage(100.0);
+            taskRepository.update(task);
             return;
         }
         double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) TaskDuration.regular * 100)
                 .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         task.setProgressPercentage(currentPercentage);
+        taskRepository.update(task);
     }
 
     void updateTasksProgress() {

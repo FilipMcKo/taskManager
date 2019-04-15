@@ -3,7 +3,6 @@ package meelogic.filip.taskManager.entities.internal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import meelogic.filip.taskManager.entities.internal.State;
 
 @NoArgsConstructor
 @AllArgsConstructor

@@ -18,7 +18,7 @@ public class TaskStateService {
         }
         task.setTaskBeginTime(System.currentTimeMillis());
         task.setCurrentState(State.RUNNING);
-        taskRepository.update(id,task);
+        taskRepository.update(task);
     }
 
     public void cancelProcessing(Integer id) {
@@ -27,7 +27,7 @@ public class TaskStateService {
             task.setCurrentState(State.CANCELLED);
             task.setProgressPercentage(0.0);
             task.setTaskBeginTime(null);
-            taskRepository.update(id,task);
+            taskRepository.update(task);
         }
     }
 }
