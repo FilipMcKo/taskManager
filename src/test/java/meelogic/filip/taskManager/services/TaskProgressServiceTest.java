@@ -3,7 +3,6 @@ package meelogic.filip.taskManager.services;
 import meelogic.filip.taskManager.entities.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,7 +14,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.mockito.Mockito.doNothing;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskProgressServiceTest {
@@ -25,6 +23,7 @@ class TaskProgressServiceTest {
     private Task task3;
     private Task task4;
     private Task task5;
+    List<Task> taskList;
     @Mock
     private TaskRepository taskRepositoryMock;
     @InjectMocks
@@ -37,44 +36,48 @@ class TaskProgressServiceTest {
         task3 = new Task(3, "Task3", "Sample task nr three", State.NONE, 0.0, null);
         task4 = new Task(4, "Task4", "Sample task nr four", State.NONE, 0.0, null);
         task5 = new Task(4, "Task5", "Sample task nr five", State.NONE, 0.0, null);
-        List<Task> taskList = new LinkedList<>(Arrays.asList(task1, task2, task3, task4, task5));
+        taskList = new LinkedList<>(Arrays.asList(task1, task2, task3));
         MockitoAnnotations.initMocks(this);
-        Mockito.when(taskRepositoryMock.getTaskList()).thenReturn(taskList);
-        doNothing().when(taskRepositoryMock).update(task1);
-        doNothing().when(taskRepositoryMock).update(task2);
-        doNothing().when(taskRepositoryMock).update(task3);
-        doNothing().when(taskRepositoryMock).update(task4);
-        doNothing().when(taskRepositoryMock).update(task5);
+        Mockito.when(taskRepositoryMock.getTaskList()).thenReturn(this.taskList);
+        task1.setTaskBeginTime(System.currentTimeMillis() - taskProgressService.getTaskDuration() / 2);
+        task2.setTaskBeginTime(System.currentTimeMillis() - taskProgressService.getTaskDuration() / 4);
+        task3.setTaskBeginTime(System.currentTimeMillis());
+        task4.setTaskBeginTime(System.currentTimeMillis() - 2 * taskProgressService.getTaskDuration());
+
     }
 
     @Test
     void updateSingleTaskProgressTest() {
-        task1.setTaskBeginTime(System.currentTimeMillis() - taskProgressService.getTaskDuration() / 2);
         taskProgressService.updateTaskProgress(task1);
         double progressPercentage1 = task1.getProgressPercentage();
 
-        task2.setTaskBeginTime(System.currentTimeMillis() - taskProgressService.getTaskDuration() / 4);
         taskProgressService.updateTaskProgress(task2);
         double progressPercentage2 = task2.getProgressPercentage();
 
-        task3.setTaskBeginTime(System.currentTimeMillis());
         taskProgressService.updateTaskProgress(task3);
         double progressPercentage3 = task3.getProgressPercentage();
 
-        task4.setTaskBeginTime(System.currentTimeMillis() - 2 * taskProgressService.getTaskDuration());
         taskProgressService.updateTaskProgress(task4);
         double progressPercentage4 = task4.getProgressPercentage();
 
         double progressPercentage5 = task5.getProgressPercentage();
-        assertAll(() -> assertEquals(50.0, progressPercentage1),
-                () -> assertEquals(25.0, progressPercentage2),
-                () -> assertEquals(0.0, progressPercentage3),
+
+        assertAll(() -> assertTrue(50.0 <= progressPercentage1 && progressPercentage1 < 55.0),
+                () -> assertTrue(25.0 <= progressPercentage2 && progressPercentage2 < 30.0),
+                () -> assertTrue(0.0 <= progressPercentage3 && progressPercentage3 < 5.0),
                 () -> assertEquals(100.0, progressPercentage4),
-                ()-> assertEquals(0.0, progressPercentage5));
+                () -> assertEquals(0.0, progressPercentage5));
     }
 
     @Test
-    void updateAllTasksProgressTest(){
+    void updateAllTasksProgressTest() {
+        taskProgressService.updateTasksProgress();
+        double progressPercentage1 = task1.getProgressPercentage();
+        double progressPercentage2 = task2.getProgressPercentage();
+        double progressPercentage3 = task3.getProgressPercentage();
 
+        assertAll(() -> assertTrue(50.0 <= progressPercentage1 && progressPercentage1 < 55.0),
+                () -> assertTrue(25.0 <= progressPercentage2 && progressPercentage2 < 30.0),
+                () -> assertTrue(0.0 <= progressPercentage3 && progressPercentage3 < 5.0));
     }
 }
