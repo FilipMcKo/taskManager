@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class TaskStateService {
     @Autowired
     private TaskRepository taskRepository;
 
     public void startProcessing(Integer id) {
         Task task = taskRepository.read(id);
-        if (task.getCurrentState().equals(State.RUNNING)) {
+        if (task.getCurrentState().equals(State.RUNNING)||task.getCurrentState().equals(State.FINISHED)) {
             return;
         }
         task.setTaskBeginTime(System.currentTimeMillis());
