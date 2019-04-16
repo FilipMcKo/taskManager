@@ -48,11 +48,11 @@ class TaskStateServiceTest {
         taskStateService.startProcessing(1);
         long repeatedStartTaskBeginTime = this.taskRepositoryMock.read(1).getTaskBeginTime();
         assertEquals(State.RUNNING, taskRepositoryMock.read(1).getCurrentState());
-        assertEquals(originalTaskBeginTime,repeatedStartTaskBeginTime);
+        assertEquals(originalTaskBeginTime, repeatedStartTaskBeginTime);
     }
 
     @Test
-    void startCancelledTaskTest(){
+    void startCancelledTaskTest() {
         taskStateService.startProcessing(1);
         taskStateService.cancelProcessing(1);
         taskStateService.startProcessing(1);
@@ -62,16 +62,16 @@ class TaskStateServiceTest {
     }
 
     @Test
-    void startFinishedTastTest(){
+    void startFinishedTaskTest() {
         Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.FINISHED, 0.0, null);
         Mockito.when(taskRepositoryMock.read(sampleTask.getId())).thenReturn(sampleTask);
         taskStateService.startProcessing(1);
-        assertEquals(State.FINISHED,taskRepositoryMock.read(1).getCurrentState());
+        assertEquals(State.FINISHED, taskRepositoryMock.read(1).getCurrentState());
         assertNull(taskRepositoryMock.read(1).getTaskBeginTime());
     }
 
     @Test
-    void cancelSetUpStateTaskTest(){
+    void cancelSetUpStateTaskTest() {
         taskStateService.cancelProcessing(1);
         assertEquals(State.NONE, taskRepositoryMock.read(1).getCurrentState());
         assertNull(taskRepositoryMock.read(1).getTaskBeginTime());
@@ -86,7 +86,7 @@ class TaskStateServiceTest {
     }
 
     @Test
-    void cancelCancelledTaskTest(){
+    void cancelCancelledTaskTest() {
         taskStateService.startProcessing(1);
         taskStateService.cancelProcessing(1);
         assertEquals(State.CANCELLED, taskRepositoryMock.read(1).getCurrentState());
@@ -97,11 +97,11 @@ class TaskStateServiceTest {
     }
 
     @Test
-    void cancelFinishedTaskTest(){
+    void cancelFinishedTaskTest() {
         Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.FINISHED, 0.0, null);
         Mockito.when(taskRepositoryMock.read(sampleTask.getId())).thenReturn(sampleTask);
         taskStateService.cancelProcessing(1);
-        assertEquals(State.FINISHED,taskRepositoryMock.read(1).getCurrentState());
+        assertEquals(State.FINISHED, taskRepositoryMock.read(1).getCurrentState());
         assertNull(taskRepositoryMock.read(1).getTaskBeginTime());
     }
 }
