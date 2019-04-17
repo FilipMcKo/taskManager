@@ -1,6 +1,6 @@
 package meelogic.filip.taskManager.services;
 
-import meelogic.filip.taskManager.entities.TaskRepository;
+import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +43,6 @@ class TaskProgressServiceTest {
         task2.setTaskBeginTime(System.currentTimeMillis() - taskProgressService.getTaskDuration() / 4);
         task3.setTaskBeginTime(System.currentTimeMillis());
         task4.setTaskBeginTime(System.currentTimeMillis() - 2 * taskProgressService.getTaskDuration());
-
     }
 
     @Test

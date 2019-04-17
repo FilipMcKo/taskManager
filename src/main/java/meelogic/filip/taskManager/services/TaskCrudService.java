@@ -3,22 +3,20 @@ package meelogic.filip.taskManager.services;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
-import meelogic.filip.taskManager.entities.*;
 import meelogic.filip.taskManager.entities.external.TaskCreator;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
+import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class TaskCrudService {
 
-    private static final AtomicInteger counter = new AtomicInteger(1);
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
@@ -29,10 +27,6 @@ public class TaskCrudService {
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
         mapperFactory.classMap(Task.class, TaskDTO.class).exclude("taskBeginTime").byDefault().register();
         mapperFacade = mapperFactory.getMapperFacade();
-    }
-
-    public static int getCounter() {
-        return counter.get();
     }
 
     public List<TaskDTO> getAllTaskDTOs() {
@@ -55,8 +49,12 @@ public class TaskCrudService {
     }
 
     public void addNewTask(TaskCreator taskCreator) {
-        Integer id = counter.getAndIncrement();
-        this.taskRepository.create(new Task(id, taskCreator.getName(), taskCreator.getDecription(), State.NONE, 0.0, null));
+        Task task = new Task();
+        task.setName(taskCreator.getName());
+        task.setDescription(taskCreator.getDecription());
+        task.setCurrentState(State.NONE);
+        task.setProgressPercentage(0.0);
+        this.taskRepository.create(task);
     }
 
     public void renameTaskById(Integer id, String newName) {

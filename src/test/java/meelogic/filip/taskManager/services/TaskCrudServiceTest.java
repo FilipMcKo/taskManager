@@ -1,6 +1,6 @@
 package meelogic.filip.taskManager.services;
 
-import meelogic.filip.taskManager.entities.TaskRepository;
+import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.external.TaskCreator;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
@@ -70,11 +70,9 @@ class TaskCrudServiceTest {
     @Test
     void addNewTask() {
         taskCrudService.addNewTask(new TaskCreator("newTask", "from task creator"));
-        assertEquals(2, TaskCrudService.getCounter());
         taskCrudService.addNewTask(new TaskCreator("newTask2", "also from task creator"));
-        assertEquals(3, TaskCrudService.getCounter());
-        verify(taskRepositoryMock, times(1)).create(new Task(1, "newTask", "from task creator", State.NONE, 0.0, null));
-        verify(taskRepositoryMock, times(1)).create(new Task(2, "newTask2", "also from task creator", State.NONE, 0.0, null));
+        verify(taskRepositoryMock, times(1)).create(new Task(null, "newTask", "from task creator", State.NONE, 0.0, null));
+        verify(taskRepositoryMock, times(1)).create(new Task(null, "newTask2", "also from task creator", State.NONE, 0.0, null));
     }
 
     @Test

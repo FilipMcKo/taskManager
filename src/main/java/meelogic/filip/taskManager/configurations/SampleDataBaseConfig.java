@@ -13,11 +13,13 @@ import java.util.List;
 public class SampleDataBaseConfig {
 
     @Bean
-    public List<Task> initDataBase() {
+    public List<Task> initInMemoryDataBase() {
         List<Task> taskList = new LinkedList<>();
-        taskList.add(new Task(1,"Task1", "Sample task nr one", State.NONE, 0.0,null));
-        taskList.add(new Task(2,"Task2","Sample task nr one", State.NONE, 0.0,null));
-        log.info("Sample tasks added");
+        Task task1 = new Task(1,"Task1", "Sample task nr one", State.NONE, 0.0,null);
+        Task task2 = new Task(2,"Task2","Sample task nr one", State.NONE, 0.0,null);
+        taskList.add(task1);
+        taskList.add(task2);
+        log.info("Sample tasks added to in-memory data base");
         return taskList;
     }
 }

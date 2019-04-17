@@ -1,6 +1,6 @@
 package meelogic.filip.taskManager.services;
 
-import meelogic.filip.taskManager.entities.TaskRepository;
+import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import org.junit.jupiter.api.BeforeEach;

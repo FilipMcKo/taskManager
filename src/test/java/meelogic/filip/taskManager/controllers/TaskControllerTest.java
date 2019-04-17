@@ -11,9 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @RunWith(SpringRunner.class)
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TaskControllerTest {
 
@@ -40,26 +38,6 @@ class TaskControllerTest {
         HttpEntity entity = new HttpEntity(null);
         restTemplate.delete(createURLWithPort("/tasks/1"));
         ResponseEntity<String> response = restTemplate.exchange(createURLWithPort("/tasks/1"), HttpMethod.GET, entity, String.class);
-        assertEquals(0,response.getHeaders().getContentLength());
+        assertEquals(0, response.getHeaders().getContentLength());
     }
-
-/*    @Test
-    void newtask() {
-        TaskCreator newTask = new TaskCreator("newTask","new task");
-        HttpEntity entity = new HttpEntity(null);
-        ResponseEntity<String> response =restTemplate.postForEntity(createURLWithPort("/tasks/1/rename"), HttpMethod.POST, String.class, newTask);
-        assertEquals(HttpStatus.OK,response.getStatusCode());
-    }
-
-    @Test
-    void renameTask() {
-    }
-
-    @Test
-    void startTask() {
-    }
-
-    @Test
-    void cancelTask() {
-    }*/
 }
