@@ -8,6 +8,7 @@ Web based app with basic REST API endpoints to manage various tasks. Connected t
 4. Swagger
 5. Lombok
 6. Orika
+7. Mockito
 
 ### Tools to introduce:
 1. MySQL

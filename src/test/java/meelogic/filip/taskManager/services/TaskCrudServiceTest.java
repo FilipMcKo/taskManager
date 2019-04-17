@@ -50,14 +50,14 @@ class TaskCrudServiceTest {
         assertAll(() -> assertEquals(taskDTOList.get(0), new TaskDTO(task1.getId(), task1.getName(), task1.getDescription(), task1.getCurrentState(), task1.getProgressPercentage())),
                 () -> assertEquals(taskDTOList.get(1), new TaskDTO(task2.getId(), task2.getName(), task2.getDescription(), task2.getCurrentState(), task2.getProgressPercentage())),
                 () -> assertEquals(taskDTOList.get(2), new TaskDTO(task3.getId(), task3.getName(), task3.getDescription(), task3.getCurrentState(), task3.getProgressPercentage())));
-        verify(taskProgressServiceMock,times(1)).updateTasksProgress();
+        verify(taskProgressServiceMock, times(1)).updateTasksProgress();
     }
 
     @Test
     void getTaskDTObyIdTest() {
         TaskDTO taskDTO = taskCrudService.getTaskDTObyId(1);
         assertEquals(taskDTO, new TaskDTO(task1.getId(), task1.getName(), task1.getDescription(), task1.getCurrentState(), task1.getProgressPercentage()));
-        verify(taskProgressServiceMock,times(1)).updateTasksProgress();
+        verify(taskProgressServiceMock, times(1)).updateTasksProgress();
     }
 
     @Test
@@ -69,12 +69,12 @@ class TaskCrudServiceTest {
 
     @Test
     void addNewTask() {
-        taskCrudService.addNewTask(new TaskCreator("newTask","from task creator"));
-        assertEquals(2,TaskCrudService.getCounter());
-        taskCrudService.addNewTask(new TaskCreator("newTask2","also from task creator"));
-        assertEquals(3,TaskCrudService.getCounter());
-        verify(taskRepositoryMock,times(1)).create(new Task(1,"newTask","from task creator",State.NONE,0.0,null));
-        verify(taskRepositoryMock,times(1)).create(new Task(2,"newTask2","also from task creator",State.NONE,0.0,null));
+        taskCrudService.addNewTask(new TaskCreator("newTask", "from task creator"));
+        assertEquals(2, TaskCrudService.getCounter());
+        taskCrudService.addNewTask(new TaskCreator("newTask2", "also from task creator"));
+        assertEquals(3, TaskCrudService.getCounter());
+        verify(taskRepositoryMock, times(1)).create(new Task(1, "newTask", "from task creator", State.NONE, 0.0, null));
+        verify(taskRepositoryMock, times(1)).create(new Task(2, "newTask2", "also from task creator", State.NONE, 0.0, null));
     }
 
     @Test
@@ -84,6 +84,6 @@ class TaskCrudServiceTest {
 
         taskCrudService.renameTaskById(1, "");
         assertEquals("", task1.getName());
-        verify(taskRepositoryMock,times(2)).update(task1);
+        verify(taskRepositoryMock, times(2)).update(task1);
     }
 }
