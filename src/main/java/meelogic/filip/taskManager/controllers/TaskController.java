@@ -38,8 +38,8 @@ public class TaskController {
     }
 
     @PutMapping("/tasks/{id}/rename")
-    public void renameTask(@RequestBody String newName, @PathVariable Integer id) {
-        taskCrudService.renameTaskById(newName, id);
+    public void renameTask(@PathVariable Integer id, @RequestBody String newName) {
+        taskCrudService.renameTaskById(id, newName);
     }
 
     @PutMapping("/tasks/{id}/start")

@@ -13,7 +13,6 @@ import java.util.List;
 @Repository
 public class TaskRepository {
 
-
     @Autowired
     private List<Task> taskList;
 

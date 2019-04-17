@@ -15,10 +15,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Component
+@Service
 public class TaskCrudService {
 
-    private static final AtomicInteger counter = new AtomicInteger(3);
+    private static final AtomicInteger counter = new AtomicInteger(1);
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
@@ -29,6 +29,10 @@ public class TaskCrudService {
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
         mapperFactory.classMap(Task.class, TaskDTO.class).exclude("taskBeginTime").byDefault().register();
         mapperFacade = mapperFactory.getMapperFacade();
+    }
+
+    public static int getCounter() {
+        return counter.get();
     }
 
     public List<TaskDTO> getAllTaskDTOs() {
@@ -55,7 +59,7 @@ public class TaskCrudService {
         this.taskRepository.create(new Task(id, taskCreator.getName(), taskCreator.getDecription(), State.NONE, 0.0, null));
     }
 
-    public void renameTaskById(String newName, Integer id) {
+    public void renameTaskById(Integer id, String newName) {
         Task task = this.taskRepository.read(id);
         task.setName(newName);
         this.taskRepository.update(task);
