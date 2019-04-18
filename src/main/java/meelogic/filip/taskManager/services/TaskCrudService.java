@@ -3,6 +3,7 @@ package meelogic.filip.taskManager.services;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import meelogic.filip.taskManager.controllers.exceptions.EntityDoesNotExistException;
 import meelogic.filip.taskManager.entities.external.TaskCreator;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
@@ -11,6 +12,7 @@ import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,12 +42,21 @@ public class TaskCrudService {
 
     public TaskDTO getTaskDTObyId(Integer id) {
         taskProgressService.updateTasksProgress();
-        Task task = this.taskRepository.read(id);
+        Task task;
+        try {
+            task = this.taskRepository.read(id);
+        } catch (EntityNotFoundException e) {
+            throw new EntityDoesNotExistException();
+        }
         return this.mapperFacade.map(task, TaskDTO.class);
     }
 
     public void removeTaskById(Integer id) {
-        this.taskRepository.delete(id);
+        try {
+            this.taskRepository.delete(id);
+        } catch (EntityNotFoundException e) {
+            throw new EntityDoesNotExistException();
+        }
     }
 
     public void addNewTask(TaskCreator taskCreator) {
@@ -58,8 +69,13 @@ public class TaskCrudService {
     }
 
     public void renameTaskById(Integer id, String newName) {
-        Task task = this.taskRepository.read(id);
-        task.setName(newName);
-        this.taskRepository.update(task);
+        Task task;
+        try {
+            task = this.taskRepository.read(id);
+            task.setName(newName);
+            this.taskRepository.update(task);
+        } catch (EntityNotFoundException e) {
+            throw new EntityDoesNotExistException();
+        }
     }
 }

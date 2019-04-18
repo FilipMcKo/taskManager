@@ -4,6 +4,7 @@ import meelogic.filip.taskManager.entities.internal.Task;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Repository
@@ -32,6 +33,9 @@ public class TaskRepository {
         session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
         Task task = session.get(Task.class, id);
+        if (task == null) {
+            throw new EntityNotFoundException("Unable to delete because such entity does not exist.");
+        }
         session.delete(task);
         session.getTransaction().commit();
         session.close();
@@ -40,7 +44,12 @@ public class TaskRepository {
     public Task read(Integer id) {
         this.session = HibernateUtils.getSessionFactory().openSession();
         this.session.beginTransaction();
-        Task task = (Task) this.session.createQuery("FROM task WHERE id= :id").setParameter("id", id).getSingleResult();
+        Task task;
+        try {
+            task = (Task) this.session.createQuery("FROM task WHERE id= :id").setParameter("id", id).getSingleResult();
+        }catch(Exception e){
+            throw new EntityNotFoundException("Unable to read because such entity does not exist.");
+        }
         this.session.close();
         return task;
     }
@@ -49,6 +58,9 @@ public class TaskRepository {
         session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
         Task task1 = session.get(Task.class, updatedTask.getId());
+        if (task1 == null) {
+            throw new EntityNotFoundException("Unable to update because such entity does not exist.");
+        }
         task1.setName(updatedTask.getName());
         task1.setDescription(updatedTask.getDescription());
         task1.setCurrentState(updatedTask.getCurrentState());
