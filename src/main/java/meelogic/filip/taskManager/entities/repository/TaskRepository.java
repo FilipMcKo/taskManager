@@ -15,7 +15,7 @@ public class TaskRepository {
         List<Task> taskList;
         session = HibernateUtils.getSessionFactory().openSession();
         session.beginTransaction();
-        taskList = (List<Task>) session.createQuery("FROM Task").list();
+        taskList = (List<Task>) session.createQuery("FROM task").list();
         session.close();
         return taskList;
     }
@@ -40,7 +40,7 @@ public class TaskRepository {
     public Task read(Integer id) {
         this.session = HibernateUtils.getSessionFactory().openSession();
         this.session.beginTransaction();
-        Task task = (Task) this.session.createQuery("FROM Task WHERE id= :id").setParameter("id", id).getSingleResult();
+        Task task = (Task) this.session.createQuery("FROM task WHERE id= :id").setParameter("id", id).getSingleResult();
         this.session.close();
         return task;
     }

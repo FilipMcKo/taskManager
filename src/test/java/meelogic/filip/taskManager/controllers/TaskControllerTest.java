@@ -1,5 +1,6 @@
 package meelogic.filip.taskManager.controllers;
 
+import meelogic.filip.taskManager.entities.internal.Task;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -40,4 +41,13 @@ class TaskControllerTest {
         ResponseEntity<String> response = restTemplate.exchange(createURLWithPort("/tasks/1"), HttpMethod.GET, entity, String.class);
         assertEquals(0, response.getHeaders().getContentLength());
     }
+
+    /*@Test
+    void createNewTaskTest(){
+        HttpEntity entity = new HttpEntity(null);
+        Task task = new Task();
+        task.setName("dasd");
+        task.setDescription("asdasdasdasd");
+        restTemplate.postForEntity(createURLWithPort("/tasks/newtask"), HttpMethod.POST,entity,task);
+    }*/
 }
