@@ -1,5 +1,7 @@
 package meelogic.filip.taskManager.controllers;
 
+import meelogic.filip.taskManager.controllers.exceptions.EntityDoesNotExistException;
+import meelogic.filip.taskManager.controllers.exceptions.ForbiddenOperationException;
 import meelogic.filip.taskManager.entities.external.TaskCreator;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.services.TaskCrudService;
@@ -7,6 +9,7 @@ import meelogic.filip.taskManager.services.TaskStateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
@@ -51,5 +54,4 @@ public class TaskController {
     public void cancelTask(@PathVariable Integer id) {
         taskStateService.cancelProcessing(id);
     }
-
 }
