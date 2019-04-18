@@ -9,8 +9,6 @@ Web based app with basic REST API endpoints to manage various tasks. Connected t
 5. Lombok
 6. Orika
 7. Mockito
-
-### Tools to introduce:
-1. MySQL
-2. Hibernate
-3. Docker
+8. MySQL
+9. Hibernate
+10. Docker
