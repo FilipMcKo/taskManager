@@ -3,11 +3,9 @@ package meelogic.filip.taskManager.controllers;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.entities.repository.TaskRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -27,8 +25,8 @@ class TaskControllerTest {
     @Autowired
     private TaskRepository taskRepository;
     private TestRestTemplate restTemplate = new TestRestTemplate();
-    private HttpEntity entity = new HttpEntity(null);
     private Task sampleTask = new Task(1, "sampleTask", "task if database empty", State.NONE, 0.0, null);
+    private HttpEntity entity = new HttpEntity(sampleTask);
 
     private String createURLWithPort(final String uri) {
         return "http://localhost:" + port + uri;
@@ -42,24 +40,62 @@ class TaskControllerTest {
     }
 
     @Test
+    void getAllTasksTest() {
+        ResponseEntity<String> response = restTemplate
+                .getForEntity(createURLWithPort("/tasks"), String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
     void getTaskDTONyIdTest() {
         ResponseEntity<String> response1 = restTemplate
-                .exchange(createURLWithPort("/tasks/" + taskRepository.getTaskList().get(0).getId()), HttpMethod.GET, entity, String.class);
+                .getForEntity(createURLWithPort("/tasks/" + taskRepository.getTaskList().get(0).getId()), String.class);
         assertEquals(HttpStatus.OK, response1.getStatusCode());
 
-        ResponseEntity<String> response2 = restTemplate.exchange(createURLWithPort("/tasks/-1"), HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response2 = restTemplate
+                .getForEntity(createURLWithPort("/tasks/-1"), String.class);
         assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
     }
 
     @Test
-    void deleteTask() {
+    void deleteTaskTask() {
         ResponseEntity<String> response1 = restTemplate
                 .exchange(createURLWithPort("/tasks/" + taskRepository.getTaskList().get(0).getId()), HttpMethod.DELETE, entity, String.class);
         assertEquals(HttpStatus.OK, response1.getStatusCode());
 
-        ResponseEntity<String> response2 = restTemplate.exchange(createURLWithPort("/tasks/-1"), HttpMethod.DELETE, entity, String.class);
+        ResponseEntity<String> response2 = restTemplate
+                .exchange(createURLWithPort("/tasks/-1"), HttpMethod.DELETE, entity, String.class);
         assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
     }
 
+    @Test
+    void newTaskTest() {
+        ResponseEntity<String> response = restTemplate.postForEntity(createURLWithPort("/tasks/newTask"), sampleTask, String.class);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
 
+    @Test
+    void renameTaskTest() {
+        ResponseEntity<String> response1 = restTemplate
+                .exchange(createURLWithPort("/tasks/") + taskRepository.getTaskList().get(0).getId() + "/rename", HttpMethod.PUT, entity, String.class);
+        assertEquals(HttpStatus.OK, response1.getStatusCode());
+
+        ResponseEntity<String> response2 = restTemplate
+                .exchange(createURLWithPort("/tasks/-1/rename"), HttpMethod.PUT, entity, String.class);
+        assertEquals(HttpStatus.NOT_FOUND, response2.getStatusCode());
+    }
+
+    @Test
+    void startTaskTest() {
+        ResponseEntity<String> response = restTemplate
+                .exchange(createURLWithPort("/tasks/-1/start"), HttpMethod.PUT, entity, String.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void cancelTaskTest() {
+        ResponseEntity<String> response = restTemplate
+                .exchange(createURLWithPort("/tasks/-1/cancel"), HttpMethod.PUT, entity, String.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
 }

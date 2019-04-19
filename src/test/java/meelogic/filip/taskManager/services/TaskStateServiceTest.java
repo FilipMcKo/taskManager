@@ -3,6 +3,7 @@ package meelogic.filip.taskManager.services;
 import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
+import meelogic.filip.taskManager.services.exceptions.TaskIsAlreadyRunningException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -44,11 +45,7 @@ class TaskStateServiceTest {
     @Test
     void startRunningTaskTest() {
         taskStateService.startProcessing(1);
-        long originalTaskBeginTime = this.taskRepositoryMock.read(1).getTaskBeginTime();
-        taskStateService.startProcessing(1);
-        long repeatedStartTaskBeginTime = this.taskRepositoryMock.read(1).getTaskBeginTime();
-        assertEquals(State.RUNNING, taskRepositoryMock.read(1).getCurrentState());
-        assertEquals(originalTaskBeginTime, repeatedStartTaskBeginTime);
+        assertThrows(new TaskIsAlreadyRunningException(), taskStateService.startProcessing(1));
     }
 
     @Test
