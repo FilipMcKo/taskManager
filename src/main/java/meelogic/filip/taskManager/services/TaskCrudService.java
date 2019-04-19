@@ -3,7 +3,7 @@ package meelogic.filip.taskManager.services;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
-import meelogic.filip.taskManager.controllers.exceptions.EntityDoesNotExistException;
+import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistException;
 import meelogic.filip.taskManager.entities.external.TaskCreator;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;

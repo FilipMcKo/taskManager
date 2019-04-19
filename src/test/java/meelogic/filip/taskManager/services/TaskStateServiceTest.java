@@ -3,6 +3,10 @@ package meelogic.filip.taskManager.services;
 import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
+import meelogic.filip.taskManager.services.exceptions.TaskIsAlreadyFinishedException;
+import meelogic.filip.taskManager.services.exceptions.TaskIsAlreadyRunningException;
+import meelogic.filip.taskManager.services.exceptions.TaskWasAlreadyCancelledException;
+import meelogic.filip.taskManager.services.exceptions.TaskWasNeverStartedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -44,11 +48,7 @@ class TaskStateServiceTest {
     @Test
     void startRunningTaskTest() {
         taskStateService.startProcessing(1);
-        long originalTaskBeginTime = this.taskRepositoryMock.read(1).getTaskBeginTime();
-        taskStateService.startProcessing(1);
-        long repeatedStartTaskBeginTime = this.taskRepositoryMock.read(1).getTaskBeginTime();
-        assertEquals(State.RUNNING, taskRepositoryMock.read(1).getCurrentState());
-        assertEquals(originalTaskBeginTime, repeatedStartTaskBeginTime);
+        assertThrows(TaskIsAlreadyRunningException.class, () -> taskStateService.startProcessing(1));
     }
 
     @Test
@@ -65,16 +65,12 @@ class TaskStateServiceTest {
     void startFinishedTaskTest() {
         Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.FINISHED, 0.0, null);
         Mockito.when(taskRepositoryMock.read(sampleTask.getId())).thenReturn(sampleTask);
-        taskStateService.startProcessing(1);
-        assertEquals(State.FINISHED, taskRepositoryMock.read(1).getCurrentState());
-        assertNull(taskRepositoryMock.read(1).getTaskBeginTime());
+        assertThrows(TaskIsAlreadyFinishedException.class,()->taskStateService.startProcessing(1));
     }
 
     @Test
     void cancelSetUpStateTaskTest() {
-        taskStateService.cancelProcessing(1);
-        assertEquals(State.NONE, taskRepositoryMock.read(1).getCurrentState());
-        assertNull(taskRepositoryMock.read(1).getTaskBeginTime());
+       assertThrows(TaskWasNeverStartedException.class,()->taskStateService.cancelProcessing(1));
     }
 
     @Test
@@ -91,17 +87,13 @@ class TaskStateServiceTest {
         taskStateService.cancelProcessing(1);
         assertEquals(State.CANCELLED, taskRepositoryMock.read(1).getCurrentState());
         assertNull(taskRepositoryMock.read(1).getTaskBeginTime());
-        taskStateService.cancelProcessing(1);
-        assertEquals(State.CANCELLED, taskRepositoryMock.read(1).getCurrentState());
-        assertNull(taskRepositoryMock.read(1).getTaskBeginTime());
+        assertThrows(TaskWasAlreadyCancelledException.class, ()->taskStateService.cancelProcessing(1));
     }
 
     @Test
     void cancelFinishedTaskTest() {
         Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.FINISHED, 0.0, null);
         Mockito.when(taskRepositoryMock.read(sampleTask.getId())).thenReturn(sampleTask);
-        taskStateService.cancelProcessing(1);
-        assertEquals(State.FINISHED, taskRepositoryMock.read(1).getCurrentState());
-        assertNull(taskRepositoryMock.read(1).getTaskBeginTime());
+        assertThrows(TaskIsAlreadyFinishedException.class,()->taskStateService.cancelProcessing(1));
     }
 }
