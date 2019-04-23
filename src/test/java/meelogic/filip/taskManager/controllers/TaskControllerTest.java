@@ -25,7 +25,7 @@ class TaskControllerTest {
     @Autowired
     private TaskRepository taskRepository;
     private TestRestTemplate restTemplate = new TestRestTemplate();
-    private Task sampleTask = new Task(1, "sampleTask", "task if database empty", State.NEW, 0.0, null);
+    private Task sampleTask = new Task(1, "sampleTask", "task if database empty", State.NEW, 0.0, null,false);
     private HttpEntity entity = new HttpEntity(sampleTask);
 
     private String createURLWithPort(final String uri) {

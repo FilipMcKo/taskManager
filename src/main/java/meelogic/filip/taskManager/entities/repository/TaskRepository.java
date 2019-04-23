@@ -67,6 +67,7 @@ public class TaskRepository {
         task1.setCurrentState(updatedTask.getCurrentState());
         task1.setProgressPercentage(updatedTask.getProgressPercentage());
         task1.setTaskBeginTime(updatedTask.getTaskBeginTime());
+        task1.setNotRunning(updatedTask.isNotRunning);
         session.getTransaction().commit();
         session.close();
     }

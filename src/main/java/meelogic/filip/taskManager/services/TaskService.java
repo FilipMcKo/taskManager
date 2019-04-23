@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Service
-public class TaskCrudService {
+public class TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
@@ -31,7 +31,7 @@ public class TaskCrudService {
         return taskDTOList;
     }
 
-    public TaskDTO getTaskDTObyId(Integer id) {
+    public TaskDTO getTaskById(Integer id) {
         taskProgressService.updateTasksProgress();
         Task task;
         try {
@@ -39,7 +39,6 @@ public class TaskCrudService {
         } catch (EntityNotFoundException e) {
             throw new EntityDoesNotExistException();
         }
-        // TODO: controller?
         return this.mapperFacade.map(task, TaskDTO.class);
     }
 
@@ -57,6 +56,7 @@ public class TaskCrudService {
         task.setDescription(taskCreationRequest.getDecription());
         task.setCurrentState(State.NEW);
         task.setProgressPercentage(0.0);
+        task.setNotRunning(true);
         this.taskRepository.create(task);
     }
 

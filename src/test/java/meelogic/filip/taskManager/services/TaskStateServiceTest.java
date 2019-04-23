@@ -27,7 +27,7 @@ class TaskStateServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.NEW, 0.0, null);
+        Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.NEW, 0.0, null,false);
         Mockito.when(taskRepositoryMock.read(sampleTask.getId())).thenReturn(sampleTask);
     }
 
@@ -63,7 +63,7 @@ class TaskStateServiceTest {
 
     @Test
     void startFinishedTaskTest() {
-        Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.FINISHED, 0.0, null);
+        Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.FINISHED, 0.0, null,false);
         Mockito.when(taskRepositoryMock.read(sampleTask.getId())).thenReturn(sampleTask);
         assertThrows(TaskIsAlreadyFinishedException.class,()->taskStateService.startProcessing(1));
     }
@@ -92,7 +92,7 @@ class TaskStateServiceTest {
 
     @Test
     void cancelFinishedTaskTest() {
-        Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.FINISHED, 0.0, null);
+        Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.FINISHED, 0.0, null,false);
         Mockito.when(taskRepositoryMock.read(sampleTask.getId())).thenReturn(sampleTask);
         assertThrows(TaskIsAlreadyFinishedException.class,()->taskStateService.cancelProcessing(1));
     }

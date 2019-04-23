@@ -22,15 +22,14 @@ public class TaskProgressService {
     }
 
     public void updateTaskProgress(Task task) {
-        // TODO: zło archeologia jest złą
-        Long begin = task.getTaskBeginTime();
-        if (begin == null) {
+        if(task.isNotRunning){
             return;
         }
-        long currentDuration = Instant.now().toEpochMilli() - begin;
+        long currentDuration = Instant.now().toEpochMilli() - task.getTaskBeginTime();
         if (currentDuration >= taskDuration) {
             task.setCurrentState(State.FINISHED);
             task.setProgressPercentage(100.0);
+            task.setNotRunning(true);
             taskRepository.update(task);
         } else {
             double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) taskDuration * 100)
