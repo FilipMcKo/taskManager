@@ -22,15 +22,18 @@ public class TaskProgressService {
     }
 
     public void updateTaskProgress(Task task) {
+        // TODO: zło archeologia jest złą
         Long begin = task.getTaskBeginTime();
         if (begin == null) {
             return;
         }
+        // TODO: instant
         long currentDuration = System.currentTimeMillis() - begin;
         if (currentDuration >= taskDuration) {
             task.setCurrentState(State.FINISHED);
             task.setProgressPercentage(100.0);
             taskRepository.update(task);
+            // TODO: zło
             return;
         }
         double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) taskDuration * 100)
@@ -40,8 +43,10 @@ public class TaskProgressService {
     }
 
     void updateTasksProgress() {
+        // TODO: streamy!
         for (Task task : taskRepository.getTaskList()) {
             this.updateTaskProgress(task);
         }
     }
+
 }

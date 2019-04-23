@@ -12,6 +12,8 @@ import java.util.List;
 @Slf4j
 public class SampleDataBaseConfig {
 
+
+    // TODO: del :)
     @Bean
     public List<Task> initInMemoryDataBase() {
         List<Task> taskList = new LinkedList<>();

@@ -14,6 +14,8 @@ import java.util.List;
 @RestController
 public class TaskController {
 
+    // TODO: crud jest beee
+    // TODO: scalic czy nie scalic?
     @Autowired
     private TaskCrudService taskCrudService;
     @Autowired
@@ -21,6 +23,7 @@ public class TaskController {
 
     @GetMapping("/tasks")
     public List<TaskDTO> getAllTasks() {
+        // TODO: DTOs w nazwie metody
         return taskCrudService.getAllTaskDTOs();
     }
 
@@ -34,6 +37,7 @@ public class TaskController {
         taskCrudService.removeTaskById(id);
     }
 
+    // TODO: zrypany endpoint
     @PostMapping("/tasks/newTask")
     public ResponseEntity<String> newTask(@RequestBody TaskCreator taskCreator) {
         taskCrudService.addNewTask(taskCreator);

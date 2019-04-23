@@ -1,5 +1,6 @@
 package meelogic.filip.taskManager.services;
 
+import com.google.common.base.Preconditions;
 import meelogic.filip.taskManager.services.exceptions.*;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
 @Service
 public class TaskStateService {
@@ -15,10 +17,18 @@ public class TaskStateService {
     private TaskRepository taskRepository;
 
     public void startProcessing(Integer id) {
+        Optional<Task> optTask = taskRepository.findById(id);
+
+        // TODO add preconditions
+        // Preconditions.checkArgument(optTask.isPresent(), "Wypierdalaj!");
+        // Preconditions.checkArgument(optTask.get().getCurrentState() == State.NONE, "Wypierdalaj!");
+
+
         Task task;
         try {
             task = taskRepository.read(id);
         } catch (EntityNotFoundException e) {
+            // TODO: exceptions out
             throw new EntityDoesNotExistException();
         }
         if (task.getCurrentState().equals(State.RUNNING)) {

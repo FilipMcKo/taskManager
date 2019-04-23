@@ -6,7 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
+// TODO: spring-data
 @Repository
 public class TaskRepository {
 
@@ -68,5 +70,8 @@ public class TaskRepository {
         task1.setTaskBeginTime(updatedTask.getTaskBeginTime());
         session.getTransaction().commit();
         session.close();
+    }
+
+    public Optional<Task> findById(Integer id) {
     }
 }

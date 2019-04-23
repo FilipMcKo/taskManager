@@ -26,6 +26,7 @@ public class TaskCrudService {
     private MapperFacade mapperFacade;
 
     TaskCrudService() {
+        // TODO fasada beane + autowire
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
         mapperFactory.classMap(Task.class, TaskDTO.class).exclude("taskBeginTime").byDefault().register();
         mapperFacade = mapperFactory.getMapperFacade();
@@ -33,6 +34,8 @@ public class TaskCrudService {
 
     public List<TaskDTO> getAllTaskDTOs() {
         taskProgressService.updateTasksProgress();
+
+        // TODO: zło ... streamy
         List<TaskDTO> taskDTOList = new LinkedList<>();
         for (Task task : this.taskRepository.getTaskList()) {
             taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class));
@@ -48,6 +51,7 @@ public class TaskCrudService {
         } catch (EntityNotFoundException e) {
             throw new EntityDoesNotExistException();
         }
+        // TODO: controller?
         return this.mapperFacade.map(task, TaskDTO.class);
     }
 
