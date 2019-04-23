@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
-
-// TODO: nazwa
-public class TaskCreator {
-    // TODO: javax.validation
+public class TaskCreationRequest {
+    @NotNull
+    @Size(min = 2, max = 30)
     String name;
     String decription;
+
 }

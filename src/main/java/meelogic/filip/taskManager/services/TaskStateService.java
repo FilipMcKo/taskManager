@@ -1,6 +1,5 @@
 package meelogic.filip.taskManager.services;
 
-import com.google.common.base.Preconditions;
 import meelogic.filip.taskManager.services.exceptions.*;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
@@ -9,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
+import java.time.Instant;
 
 @Service
 public class TaskStateService {
@@ -17,11 +16,11 @@ public class TaskStateService {
     private TaskRepository taskRepository;
 
     public void startProcessing(Integer id) {
-        Optional<Task> optTask = taskRepository.findById(id);
+        //Optional<Task> optTask = taskRepository.findById(id);
 
         // TODO add preconditions
         // Preconditions.checkArgument(optTask.isPresent(), "Wypierdalaj!");
-        // Preconditions.checkArgument(optTask.get().getCurrentState() == State.NONE, "Wypierdalaj!");
+        // Preconditions.checkArgument(optTask.get().getCurrentState() == State.NEW, "Wypierdalaj!");
 
 
         Task task;
@@ -37,7 +36,7 @@ public class TaskStateService {
         if (task.getCurrentState().equals(State.FINISHED)) {
             throw new TaskIsAlreadyFinishedException();
         }
-        task.setTaskBeginTime(System.currentTimeMillis());
+        task.setTaskBeginTime(Instant.now().toEpochMilli());
         task.setCurrentState(State.RUNNING);
         taskRepository.update(task);
     }
@@ -58,7 +57,7 @@ public class TaskStateService {
             throw new TaskIsAlreadyFinishedException();
         } else if (task.getCurrentState().equals(State.CANCELLED)) {
             throw new TaskWasAlreadyCancelledException();
-        } else if (task.getCurrentState().equals(State.NONE)) {
+        } else if (task.getCurrentState().equals(State.NEW)) {
             throw new TaskWasNeverStartedException();
         }
     }

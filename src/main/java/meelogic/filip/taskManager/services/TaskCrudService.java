@@ -1,10 +1,8 @@
 package meelogic.filip.taskManager.services;
 
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistException;
-import meelogic.filip.taskManager.entities.external.TaskCreator;
+import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
@@ -23,23 +21,13 @@ public class TaskCrudService {
     private TaskRepository taskRepository;
     @Autowired
     private TaskProgressService taskProgressService;
+    @Autowired
     private MapperFacade mapperFacade;
 
-    TaskCrudService() {
-        // TODO fasada beane + autowire
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        mapperFactory.classMap(Task.class, TaskDTO.class).exclude("taskBeginTime").byDefault().register();
-        mapperFacade = mapperFactory.getMapperFacade();
-    }
-
-    public List<TaskDTO> getAllTaskDTOs() {
+    public List<TaskDTO> getAllTasks() {
         taskProgressService.updateTasksProgress();
-
-        // TODO: zło ... streamy
         List<TaskDTO> taskDTOList = new LinkedList<>();
-        for (Task task : this.taskRepository.getTaskList()) {
-            taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class));
-        }
+        this.taskRepository.getTaskList().forEach(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
         return taskDTOList;
     }
 
@@ -63,11 +51,11 @@ public class TaskCrudService {
         }
     }
 
-    public void addNewTask(TaskCreator taskCreator) {
+    public void addNewTask(TaskCreationRequest taskCreationRequest) {
         Task task = new Task();
-        task.setName(taskCreator.getName());
-        task.setDescription(taskCreator.getDecription());
-        task.setCurrentState(State.NONE);
+        task.setName(taskCreationRequest.getName());
+        task.setDescription(taskCreationRequest.getDecription());
+        task.setCurrentState(State.NEW);
         task.setProgressPercentage(0.0);
         this.taskRepository.create(task);
     }

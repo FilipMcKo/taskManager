@@ -1,5 +1,5 @@
 package meelogic.filip.taskManager.entities.internal;
 
 public enum State {
-    NONE, RUNNING, FINISHED, CANCELLED
+    NEW, RUNNING, FINISHED, CANCELLED
 }

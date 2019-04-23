@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Service
 public class TaskProgressService {
 
     private long taskDuration = TaskDuration.REGULAR.getDuration();
-
     @Autowired
     private TaskRepository taskRepository;
 
@@ -27,26 +27,20 @@ public class TaskProgressService {
         if (begin == null) {
             return;
         }
-        // TODO: instant
-        long currentDuration = System.currentTimeMillis() - begin;
+        long currentDuration = Instant.now().toEpochMilli() - begin;
         if (currentDuration >= taskDuration) {
             task.setCurrentState(State.FINISHED);
             task.setProgressPercentage(100.0);
             taskRepository.update(task);
-            // TODO: zło
-            return;
+        } else {
+            double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) taskDuration * 100)
+                    .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            task.setProgressPercentage(currentPercentage);
+            taskRepository.update(task);
         }
-        double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) taskDuration * 100)
-                .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-        task.setProgressPercentage(currentPercentage);
-        taskRepository.update(task);
     }
 
     void updateTasksProgress() {
-        // TODO: streamy!
-        for (Task task : taskRepository.getTaskList()) {
-            this.updateTaskProgress(task);
-        }
+        taskRepository.getTaskList().forEach(this::updateTaskProgress);
     }
-
 }

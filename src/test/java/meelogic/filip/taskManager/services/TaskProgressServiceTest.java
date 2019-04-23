@@ -31,11 +31,11 @@ class TaskProgressServiceTest {
 
     @BeforeEach
     void setUp() {
-        task1 = new Task(1, "Task1", "Sample task nr one", State.NONE, 0.0, null);
-        task2 = new Task(2, "Task2", "Sample task nr two", State.NONE, 0.0, null);
-        task3 = new Task(3, "Task3", "Sample task nr three", State.NONE, 0.0, null);
-        task4 = new Task(4, "Task4", "Sample task nr four", State.NONE, 0.0, null);
-        task5 = new Task(4, "Task5", "Sample task nr five", State.NONE, 0.0, null);
+        task1 = new Task(1, "Task1", "Sample task nr one", State.NEW, 0.0, null);
+        task2 = new Task(2, "Task2", "Sample task nr two", State.NEW, 0.0, null);
+        task3 = new Task(3, "Task3", "Sample task nr three", State.NEW, 0.0, null);
+        task4 = new Task(4, "Task4", "Sample task nr four", State.NEW, 0.0, null);
+        task5 = new Task(4, "Task5", "Sample task nr five", State.NEW, 0.0, null);
         taskList = new LinkedList<>(Arrays.asList(task1, task2, task3));
         MockitoAnnotations.initMocks(this);
         Mockito.when(taskRepositoryMock.getTaskList()).thenReturn(this.taskList);

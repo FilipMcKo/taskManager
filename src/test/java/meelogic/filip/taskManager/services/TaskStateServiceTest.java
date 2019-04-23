@@ -27,13 +27,13 @@ class TaskStateServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.NONE, 0.0, null);
+        Task sampleTask = new Task(1, "Task2", "Sample task nr two", State.NEW, 0.0, null);
         Mockito.when(taskRepositoryMock.read(sampleTask.getId())).thenReturn(sampleTask);
     }
 
     @Test
     void setUpStateTaskTest() {
-        assertEquals(State.NONE, taskRepositoryMock.read(1).getCurrentState());
+        assertEquals(State.NEW, taskRepositoryMock.read(1).getCurrentState());
         assertNull(taskRepositoryMock.read(1).getTaskBeginTime());
     }
 

@@ -1,7 +1,7 @@
 package meelogic.filip.taskManager.services;
 
 import meelogic.filip.taskManager.entities.repository.TaskRepository;
-import meelogic.filip.taskManager.entities.external.TaskCreator;
+import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
@@ -36,7 +36,7 @@ class TaskCrudServiceTest {
     @BeforeEach
     void setUp() {
         task1 = new Task(1, "Task1", "Sample task nr one", State.RUNNING, 3.3, 987987987L);
-        task2 = new Task(2, "Task2", "Sample task nr two", State.NONE, 0.0, null);
+        task2 = new Task(2, "Task2", "Sample task nr two", State.NEW, 0.0, null);
         task3 = new Task(3, "Task3", "Sample task nr three", State.CANCELLED, 0.0, null);
         taskList = new LinkedList<>(Arrays.asList(task1, task2, task3));
         MockitoAnnotations.initMocks(this);
@@ -46,7 +46,7 @@ class TaskCrudServiceTest {
 
     @Test
     void getAllTaskDTOsTest() {
-        List<TaskDTO> taskDTOList = this.taskCrudService.getAllTaskDTOs();
+        List<TaskDTO> taskDTOList = this.taskCrudService.getAllTasks();
         assertAll(() -> assertEquals(taskDTOList.get(0), new TaskDTO(task1.getId(), task1.getName(), task1.getDescription(), task1.getCurrentState(), task1.getProgressPercentage())),
                 () -> assertEquals(taskDTOList.get(1), new TaskDTO(task2.getId(), task2.getName(), task2.getDescription(), task2.getCurrentState(), task2.getProgressPercentage())),
                 () -> assertEquals(taskDTOList.get(2), new TaskDTO(task3.getId(), task3.getName(), task3.getDescription(), task3.getCurrentState(), task3.getProgressPercentage())));
@@ -69,10 +69,10 @@ class TaskCrudServiceTest {
 
     @Test
     void addNewTask() {
-        taskCrudService.addNewTask(new TaskCreator("newTask", "from task creator"));
-        taskCrudService.addNewTask(new TaskCreator("newTask2", "also from task creator"));
-        verify(taskRepositoryMock, times(1)).create(new Task(null, "newTask", "from task creator", State.NONE, 0.0, null));
-        verify(taskRepositoryMock, times(1)).create(new Task(null, "newTask2", "also from task creator", State.NONE, 0.0, null));
+        taskCrudService.addNewTask(new TaskCreationRequest("newTask", "from task creator"));
+        taskCrudService.addNewTask(new TaskCreationRequest("newTask2", "also from task creator"));
+        verify(taskRepositoryMock, times(1)).create(new Task(null, "newTask", "from task creator", State.NEW, 0.0, null));
+        verify(taskRepositoryMock, times(1)).create(new Task(null, "newTask2", "also from task creator", State.NEW, 0.0, null));
     }
 
     @Test

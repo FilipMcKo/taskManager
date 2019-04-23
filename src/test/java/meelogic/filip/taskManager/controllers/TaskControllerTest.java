@@ -25,7 +25,7 @@ class TaskControllerTest {
     @Autowired
     private TaskRepository taskRepository;
     private TestRestTemplate restTemplate = new TestRestTemplate();
-    private Task sampleTask = new Task(1, "sampleTask", "task if database empty", State.NONE, 0.0, null);
+    private Task sampleTask = new Task(1, "sampleTask", "task if database empty", State.NEW, 0.0, null);
     private HttpEntity entity = new HttpEntity(sampleTask);
 
     private String createURLWithPort(final String uri) {
@@ -34,7 +34,7 @@ class TaskControllerTest {
 
     @BeforeEach
     void setUp() {
-        if (taskRepository.getTaskList().get(0) == null) {
+        if (taskRepository.getTaskList().size()==0) {
             taskRepository.create(sampleTask);
         }
     }
@@ -70,7 +70,7 @@ class TaskControllerTest {
 
     @Test
     void newTaskTest() {
-        ResponseEntity<String> response = restTemplate.postForEntity(createURLWithPort("/tasks/newTask"), sampleTask, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(createURLWithPort("/tasks"), sampleTask, String.class);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 

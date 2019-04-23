@@ -1,6 +1,6 @@
 package meelogic.filip.taskManager.controllers;
 
-import meelogic.filip.taskManager.entities.external.TaskCreator;
+import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.services.TaskCrudService;
 import meelogic.filip.taskManager.services.TaskStateService;
@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class TaskController {
     @GetMapping("/tasks")
     public List<TaskDTO> getAllTasks() {
         // TODO: DTOs w nazwie metody
-        return taskCrudService.getAllTaskDTOs();
+        return taskCrudService.getAllTasks();
     }
 
     @GetMapping("/tasks/{id}")
@@ -37,10 +38,9 @@ public class TaskController {
         taskCrudService.removeTaskById(id);
     }
 
-    // TODO: zrypany endpoint
-    @PostMapping("/tasks/newTask")
-    public ResponseEntity<String> newTask(@RequestBody TaskCreator taskCreator) {
-        taskCrudService.addNewTask(taskCreator);
+    @PostMapping("/tasks")
+    public ResponseEntity<String> newTask(@Valid TaskCreationRequest taskCreationRequest) {
+        taskCrudService.addNewTask(taskCreationRequest);
         return new ResponseEntity<>("Entity created", HttpStatus.CREATED);
     }
 
