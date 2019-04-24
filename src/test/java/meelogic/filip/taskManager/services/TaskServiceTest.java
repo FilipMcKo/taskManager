@@ -1,12 +1,10 @@
 package meelogic.filip.taskManager.services;
 
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
-import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,7 +28,7 @@ class TaskServiceTest {
     @Mock
     private TaskRepository taskRepositoryMock;
     @Mock
-    private TaskProgressService taskProgressServiceMock;
+    private ScheduledTaskProgressService scheduledTaskProgressServiceMock;
     @InjectMocks
     private TaskService taskService;
 
@@ -51,14 +49,14 @@ class TaskServiceTest {
         assertAll(() -> assertEquals(taskDTOList.get(0), new TaskDTO(task1.getId(), task1.getName(), task1.getDescription(), task1.getCurrentState(), task1.getProgressPercentage())),
                 () -> assertEquals(taskDTOList.get(1), new TaskDTO(task2.getId(), task2.getName(), task2.getDescription(), task2.getCurrentState(), task2.getProgressPercentage())),
                 () -> assertEquals(taskDTOList.get(2), new TaskDTO(task3.getId(), task3.getName(), task3.getDescription(), task3.getCurrentState(), task3.getProgressPercentage())));
-        verify(taskProgressServiceMock, times(1)).updateTasksProgress();
+        verify(scheduledTaskProgressServiceMock, times(1)).updateTasksProgress();
     }
 
     @Test
     void getTaskDTObyIdTest() {
         TaskDTO taskDTO = taskService.getTaskById(1);
         assertEquals(taskDTO, new TaskDTO(task1.getId(), task1.getName(), task1.getDescription(), task1.getCurrentState(), task1.getProgressPercentage()));
-        verify(taskProgressServiceMock, times(1)).updateTasksProgress();
+        verify(scheduledTaskProgressServiceMock, times(1)).updateTasksProgress();
     }*/
 
     @Test

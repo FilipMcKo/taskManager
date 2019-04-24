@@ -5,13 +5,14 @@ import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.entities.internal.TaskDuration;
 import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
-@Service
-public class TaskProgressService {
+@Component
+public class ScheduledTaskProgressService {
 
     private long taskDuration = TaskDuration.REGULAR.getDuration();
     @Autowired
@@ -38,6 +39,7 @@ public class TaskProgressService {
         taskRepository.save(task);
     }
 
+    @Scheduled(fixedDelay = 1000)
     void updateTasksProgress() {
         taskRepository.findAll().forEach(this::updateTaskProgress);
     }

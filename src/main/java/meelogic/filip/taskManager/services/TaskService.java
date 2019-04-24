@@ -1,6 +1,5 @@
 package meelogic.filip.taskManager.services;
 
-import ma.glasnost.orika.MapperFacade;
 import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.internal.State;
@@ -17,16 +16,12 @@ public class TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
-    @Autowired
-    private TaskProgressService taskProgressService;
 
     public Iterable<Task> getAllTasks() {
-        //taskProgressService.updateTasksProgress();
         return taskRepository.findAll();
     }
 
     public Task getTaskById(Integer id) {
-        //taskProgressService.updateTasksProgress();
         Optional<Task> optTask = this.taskRepository.findById(id);
         Preconditions.checkArgument(optTask.isPresent(), HttpStatus.NOT_FOUND);
         return optTask.get();

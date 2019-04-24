@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TaskProgressServiceTest {
+class ScheduledTaskProgressServiceTest {
 
     private Task task1;
     private Task task2;
@@ -27,7 +27,7 @@ class TaskProgressServiceTest {
     @Mock
     private TaskRepository taskRepositoryMock;
     @InjectMocks
-    private TaskProgressService taskProgressService;
+    private ScheduledTaskProgressService scheduledTaskProgressService;
 
     @BeforeEach
     void setUp() {
@@ -39,24 +39,24 @@ class TaskProgressServiceTest {
         taskList = new LinkedList<>(Arrays.asList(task1, task2, task3));
         MockitoAnnotations.initMocks(this);
         Mockito.when(taskRepositoryMock.findAll()).thenReturn(this.taskList);
-        task1.setTaskBeginTime(System.currentTimeMillis() - taskProgressService.getTaskDuration() / 2);
-        task2.setTaskBeginTime(System.currentTimeMillis() - taskProgressService.getTaskDuration() / 4);
+        task1.setTaskBeginTime(System.currentTimeMillis() - scheduledTaskProgressService.getTaskDuration() / 2);
+        task2.setTaskBeginTime(System.currentTimeMillis() - scheduledTaskProgressService.getTaskDuration() / 4);
         task3.setTaskBeginTime(System.currentTimeMillis());
-        task4.setTaskBeginTime(System.currentTimeMillis() - 2 * taskProgressService.getTaskDuration());
+        task4.setTaskBeginTime(System.currentTimeMillis() - 2 * scheduledTaskProgressService.getTaskDuration());
     }
 
     @Test
     void updateSingleTaskProgressTest() {
-        taskProgressService.updateTaskProgress(task1);
+        scheduledTaskProgressService.updateTaskProgress(task1);
         double progressPercentage1 = task1.getProgressPercentage();
 
-        taskProgressService.updateTaskProgress(task2);
+        scheduledTaskProgressService.updateTaskProgress(task2);
         double progressPercentage2 = task2.getProgressPercentage();
 
-        taskProgressService.updateTaskProgress(task3);
+        scheduledTaskProgressService.updateTaskProgress(task3);
         double progressPercentage3 = task3.getProgressPercentage();
 
-        taskProgressService.updateTaskProgress(task4);
+        scheduledTaskProgressService.updateTaskProgress(task4);
         double progressPercentage4 = task4.getProgressPercentage();
 
         double progressPercentage5 = task5.getProgressPercentage();
@@ -70,7 +70,7 @@ class TaskProgressServiceTest {
 
     @Test
     void updateAllTasksProgressTest() {
-        taskProgressService.updateTasksProgress();
+        scheduledTaskProgressService.updateTasksProgress();
         double progressPercentage1 = task1.getProgressPercentage();
         double progressPercentage2 = task2.getProgressPercentage();
         double progressPercentage3 = task3.getProgressPercentage();
