@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,14 +40,14 @@ class ScheduledTaskProgressServiceTest {
         taskList = new LinkedList<>(Arrays.asList(task1, task2, task3));
         MockitoAnnotations.initMocks(this);
         Mockito.when(taskRepositoryMock.findAll()).thenReturn(this.taskList);
-        task1.setTaskBeginTime(System.currentTimeMillis() - scheduledTaskProgressService.getTaskDuration() / 2);
-        task2.setTaskBeginTime(System.currentTimeMillis() - scheduledTaskProgressService.getTaskDuration() / 4);
-        task3.setTaskBeginTime(System.currentTimeMillis());
-        task4.setTaskBeginTime(System.currentTimeMillis() - 2 * scheduledTaskProgressService.getTaskDuration());
+        task1.setTaskBeginTime(Instant.now().toEpochMilli() - scheduledTaskProgressService.getTaskDuration() / 2);
+        task2.setTaskBeginTime(Instant.now().toEpochMilli() - scheduledTaskProgressService.getTaskDuration() / 4);
+        task3.setTaskBeginTime(Instant.now().toEpochMilli());
+        task4.setTaskBeginTime(Instant.now().toEpochMilli() - 2 * scheduledTaskProgressService.getTaskDuration());
     }
 
     @Test
-    void updateSingleTaskProgressTest() {
+    void shouldUpdateSingleTaskProgress() {
         scheduledTaskProgressService.updateTaskProgress(task1);
         double progressPercentage1 = task1.getProgressPercentage();
 
@@ -69,7 +70,7 @@ class ScheduledTaskProgressServiceTest {
     }
 
     @Test
-    void updateAllTasksProgressTest() {
+    void shouldUpdateAllTasksProgress() {
         scheduledTaskProgressService.updateTasksProgress();
         double progressPercentage1 = task1.getProgressPercentage();
         double progressPercentage2 = task2.getProgressPercentage();
