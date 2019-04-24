@@ -1,13 +1,15 @@
 package meelogic.filip.taskManager.services;
 
-import meelogic.filip.taskManager.services.exceptions.*;
+import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.entities.repository.TaskRepository;
+import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
+import java.time.Instant;
+import java.util.Optional;
 
 @Service
 public class TaskStateService {
@@ -15,41 +17,27 @@ public class TaskStateService {
     private TaskRepository taskRepository;
 
     public void startProcessing(Integer id) {
-        Task task;
-        try {
-            task = taskRepository.read(id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityDoesNotExistException();
-        }
-        if (task.getCurrentState().equals(State.RUNNING)) {
-            throw new TaskIsAlreadyRunningException();
-        }
-        if (task.getCurrentState().equals(State.FINISHED)) {
-            throw new TaskIsAlreadyFinishedException();
-        }
-        task.setTaskBeginTime(System.currentTimeMillis());
+        Optional<Task> optTask = taskRepository.findById(id);
+        Preconditions.checkArgument(optTask.isPresent(), HttpStatus.NOT_FOUND);
+        Task task = optTask.get();
+        Preconditions.checkArgument(task.getCurrentState() == State.NEW, HttpStatus.FORBIDDEN);
+
+        task.setTaskBeginTime(Instant.now().toEpochMilli());
         task.setCurrentState(State.RUNNING);
-        taskRepository.update(task);
+        task.setNotRunning(false);
+        taskRepository.save(task);
     }
 
     public void cancelProcessing(Integer id) {
-        Task task;
-        try {
-            task = taskRepository.read(id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityDoesNotExistException();
-        }
-        if (task.getCurrentState().equals(State.RUNNING)) {
-            task.setCurrentState(State.CANCELLED);
-            task.setProgressPercentage(0.0);
-            task.setTaskBeginTime(null);
-            taskRepository.update(task);
-        } else if (task.getCurrentState().equals(State.FINISHED)) {
-            throw new TaskIsAlreadyFinishedException();
-        } else if (task.getCurrentState().equals(State.CANCELLED)) {
-            throw new TaskWasAlreadyCancelledException();
-        } else if (task.getCurrentState().equals(State.NONE)) {
-            throw new TaskWasNeverStartedException();
-        }
+        Optional<Task> optTask = taskRepository.findById(id);
+        Preconditions.checkArgument(optTask.isPresent(), HttpStatus.NOT_FOUND);
+        Task task = optTask.get();
+        Preconditions.checkArgument(task.getCurrentState() == State.RUNNING, HttpStatus.FORBIDDEN);
+
+        optTask.get().setCurrentState(State.CANCELLED);
+        optTask.get().setProgressPercentage(0.0);
+        optTask.get().setTaskBeginTime(null);
+        optTask.get().setNotRunning(true);
+        taskRepository.save(task);
     }
 }

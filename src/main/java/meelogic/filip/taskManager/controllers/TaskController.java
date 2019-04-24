@@ -1,48 +1,55 @@
 package meelogic.filip.taskManager.controllers;
 
-import meelogic.filip.taskManager.entities.external.TaskCreator;
+import ma.glasnost.orika.MapperFacade;
+import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
-import meelogic.filip.taskManager.services.TaskCrudService;
+import meelogic.filip.taskManager.services.TaskService;
 import meelogic.filip.taskManager.services.TaskStateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
 public class TaskController {
 
     @Autowired
-    private TaskCrudService taskCrudService;
+    private TaskService taskService;
     @Autowired
     private TaskStateService taskStateService;
+    @Autowired
+    private MapperFacade mapperFacade;
 
     @GetMapping("/tasks")
     public List<TaskDTO> getAllTasks() {
-        return taskCrudService.getAllTaskDTOs();
+        List<TaskDTO> taskDTOList = new LinkedList<>();
+        taskService.getAllTasks().forEach(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
+        return taskDTOList;
     }
 
     @GetMapping("/tasks/{id}")
-    public TaskDTO getTaskDTO(@PathVariable Integer id) {
-        return taskCrudService.getTaskDTObyId(id);
+    public TaskDTO getTaskById(@PathVariable Integer id) {
+        return this.mapperFacade.map(taskService.getTaskById(id), TaskDTO.class);
     }
 
     @DeleteMapping("/tasks/{id}")
     public void deleteTask(@PathVariable Integer id) {
-        taskCrudService.removeTaskById(id);
+        taskService.removeTaskById(id);
     }
 
-    @PostMapping("/tasks/newTask")
-    public ResponseEntity<String> newTask(@RequestBody TaskCreator taskCreator) {
-        taskCrudService.addNewTask(taskCreator);
-        return new ResponseEntity<>("Entity created", HttpStatus.CREATED);
+    @PostMapping("/tasks")
+    public ResponseEntity<String> newTask(@Valid TaskCreationRequest taskCreationRequest) {
+        Integer newTaskId = taskService.addNewTask(taskCreationRequest);
+        return new ResponseEntity<>(newTaskId.toString(), HttpStatus.CREATED);
     }
 
     @PutMapping("/tasks/{id}/rename")
     public void renameTask(@PathVariable Integer id, @RequestBody String newName) {
-        taskCrudService.renameTaskById(id, newName);
+        taskService.renameTaskById(id, newName);
     }
 
     @PutMapping("/tasks/{id}/start")
