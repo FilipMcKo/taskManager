@@ -21,4 +21,5 @@ public class Task {
     private State currentState;
     private Double progressPercentage;
     private Long taskBeginTime;
+    public boolean isNotRunning;
 }
