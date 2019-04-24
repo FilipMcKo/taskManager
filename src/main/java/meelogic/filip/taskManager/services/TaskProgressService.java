@@ -1,9 +1,9 @@
 package meelogic.filip.taskManager.services;
 
-import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.entities.internal.TaskDuration;
+import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,16 +30,16 @@ public class TaskProgressService {
             task.setCurrentState(State.FINISHED);
             task.setProgressPercentage(100.0);
             task.setNotRunning(true);
-            taskRepository.update(task);
+            taskRepository.save(task);
         } else {
             double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) taskDuration * 100)
                     .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             task.setProgressPercentage(currentPercentage);
-            taskRepository.update(task);
+            taskRepository.save(task);
         }
     }
 
     void updateTasksProgress() {
-        taskRepository.getTaskList().forEach(this::updateTaskProgress);
+        taskRepository.findAll().forEach(this::updateTaskProgress);
     }
 }

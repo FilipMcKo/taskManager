@@ -34,8 +34,8 @@ class TaskControllerTest {
 
     @BeforeEach
     void setUp() {
-        if (taskRepository.getTaskList().size()==0) {
-            taskRepository.create(sampleTask);
+        if (!taskRepository.findAll().iterator().hasNext()) {
+            taskRepository.save(sampleTask);
         }
     }
 
@@ -49,7 +49,7 @@ class TaskControllerTest {
     @Test
     void getTaskDTONyIdTest() {
         ResponseEntity<String> response1 = restTemplate
-                .getForEntity(createURLWithPort("/tasks/" + taskRepository.getTaskList().get(0).getId()), String.class);
+                .getForEntity(createURLWithPort("/tasks/" + taskRepository.findAll().iterator().next().getId()), String.class);
         assertEquals(HttpStatus.OK, response1.getStatusCode());
 
         ResponseEntity<String> response2 = restTemplate
@@ -60,7 +60,7 @@ class TaskControllerTest {
     @Test
     void deleteTaskTask() {
         ResponseEntity<String> response1 = restTemplate
-                .exchange(createURLWithPort("/tasks/" + taskRepository.getTaskList().get(0).getId()), HttpMethod.DELETE, entity, String.class);
+                .exchange(createURLWithPort("/tasks/" + taskRepository.findAll().iterator().next().getId()), HttpMethod.DELETE, entity, String.class);
         assertEquals(HttpStatus.OK, response1.getStatusCode());
 
         ResponseEntity<String> response2 = restTemplate
@@ -77,7 +77,7 @@ class TaskControllerTest {
     @Test
     void renameTaskTest() {
         ResponseEntity<String> response1 = restTemplate
-                .exchange(createURLWithPort("/tasks/") + taskRepository.getTaskList().get(0).getId() + "/rename", HttpMethod.PUT, entity, String.class);
+                .exchange(createURLWithPort("/tasks/") + taskRepository.findAll().iterator().next().getId() + "/rename", HttpMethod.PUT, entity, String.class);
         assertEquals(HttpStatus.OK, response1.getStatusCode());
 
         ResponseEntity<String> response2 = restTemplate

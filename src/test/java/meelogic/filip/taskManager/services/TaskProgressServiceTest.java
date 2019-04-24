@@ -1,8 +1,8 @@
 package meelogic.filip.taskManager.services;
 
-import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
+import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,7 +38,7 @@ class TaskProgressServiceTest {
         task5 = new Task(4, "Task5", "Sample task nr five", State.NEW, 0.0, null,false);
         taskList = new LinkedList<>(Arrays.asList(task1, task2, task3));
         MockitoAnnotations.initMocks(this);
-        Mockito.when(taskRepositoryMock.getTaskList()).thenReturn(this.taskList);
+        Mockito.when(taskRepositoryMock.findAll()).thenReturn(this.taskList);
         task1.setTaskBeginTime(System.currentTimeMillis() - taskProgressService.getTaskDuration() / 2);
         task2.setTaskBeginTime(System.currentTimeMillis() - taskProgressService.getTaskDuration() / 4);
         task3.setTaskBeginTime(System.currentTimeMillis());

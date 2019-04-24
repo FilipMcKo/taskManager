@@ -1,18 +1,19 @@
 package meelogic.filip.taskManager.services;
 
 import ma.glasnost.orika.MapperFacade;
+import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistException;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.entities.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -25,26 +26,26 @@ public class TaskService {
     private MapperFacade mapperFacade;
 
     public List<TaskDTO> getAllTasks() {
-        taskProgressService.updateTasksProgress();
+        //taskProgressService.updateTasksProgress();
         List<TaskDTO> taskDTOList = new LinkedList<>();
-        this.taskRepository.getTaskList().forEach(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
+        this.taskRepository.findAll().forEach(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
         return taskDTOList;
     }
 
     public TaskDTO getTaskById(Integer id) {
-        taskProgressService.updateTasksProgress();
-        Task task;
+        //taskProgressService.updateTasksProgress();
+        Optional<Task> task;
         try {
-            task = this.taskRepository.read(id);
+            task = this.taskRepository.findById(id);
         } catch (EntityNotFoundException e) {
             throw new EntityDoesNotExistException();
         }
-        return this.mapperFacade.map(task, TaskDTO.class);
+        return this.mapperFacade.map(task.get(), TaskDTO.class);
     }
 
     public void removeTaskById(Integer id) {
         try {
-            this.taskRepository.delete(id);
+            this.taskRepository.deleteById(id);
         } catch (EntityNotFoundException e) {
             throw new EntityDoesNotExistException();
         }
@@ -57,15 +58,15 @@ public class TaskService {
         task.setCurrentState(State.NEW);
         task.setProgressPercentage(0.0);
         task.setNotRunning(true);
-        this.taskRepository.create(task);
+        this.taskRepository.save(task);
     }
 
     public void renameTaskById(Integer id, String newName) {
-        Task task;
+        Optional<Task> task;
         try {
-            task = this.taskRepository.read(id);
-            task.setName(newName);
-            this.taskRepository.update(task);
+            task = this.taskRepository.findById(id);
+            task.get().setName(newName);
+            this.taskRepository.save(task.get());
         } catch (EntityNotFoundException e) {
             throw new EntityDoesNotExistException();
         }
