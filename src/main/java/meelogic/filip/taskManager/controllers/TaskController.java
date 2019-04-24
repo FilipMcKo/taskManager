@@ -1,7 +1,9 @@
 package meelogic.filip.taskManager.controllers;
 
+import ma.glasnost.orika.MapperFacade;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
+import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.TaskService;
 import meelogic.filip.taskManager.services.TaskStateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,26 +12,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
 public class TaskController {
 
-    // TODO: crud jest beee
-    // TODO: scalic czy nie scalic?
     @Autowired
     private TaskService taskService;
     @Autowired
     private TaskStateService taskStateService;
+    @Autowired
+    private MapperFacade mapperFacade;
 
     @GetMapping("/tasks")
     public List<TaskDTO> getAllTasks() {
-        return taskService.getAllTasks();
+        List<TaskDTO> taskDTOList = new LinkedList<>();
+        taskService.getAllTasks().forEach(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
+        return taskDTOList;
     }
 
     @GetMapping("/tasks/{id}")
-    public TaskDTO getTaskDTO(@PathVariable Integer id) {
-        return taskService.getTaskById(id);
+    public TaskDTO getTaskById(@PathVariable Integer id) {
+        return this.mapperFacade.map(taskService.getTaskById(id), TaskDTO.class);
     }
 
     @DeleteMapping("/tasks/{id}")

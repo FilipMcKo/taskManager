@@ -2,17 +2,14 @@ package meelogic.filip.taskManager.services;
 
 import ma.glasnost.orika.MapperFacade;
 import meelogic.filip.taskManager.entities.repository.TaskRepository;
-import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistException;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
-import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
+import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.*;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,33 +19,23 @@ public class TaskService {
     private TaskRepository taskRepository;
     @Autowired
     private TaskProgressService taskProgressService;
-    @Autowired
-    private MapperFacade mapperFacade;
 
-    public List<TaskDTO> getAllTasks() {
+    public Iterable<Task> getAllTasks() {
         //taskProgressService.updateTasksProgress();
-        List<TaskDTO> taskDTOList = new LinkedList<>();
-        this.taskRepository.findAll().forEach(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
-        return taskDTOList;
+        return taskRepository.findAll();
     }
 
-    public TaskDTO getTaskById(Integer id) {
+    public Task getTaskById(Integer id) {
         //taskProgressService.updateTasksProgress();
-        Optional<Task> task;
-        try {
-            task = this.taskRepository.findById(id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityDoesNotExistException();
-        }
-        return this.mapperFacade.map(task.get(), TaskDTO.class);
+        Optional<Task> optTask = this.taskRepository.findById(id);
+        Preconditions.checkArgument(optTask.isPresent(), HttpStatus.NOT_FOUND);
+        return optTask.get();
     }
 
     public void removeTaskById(Integer id) {
-        try {
-            this.taskRepository.deleteById(id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityDoesNotExistException();
-        }
+        Optional<Task> optTask = this.taskRepository.findById(id);
+        Preconditions.checkArgument(optTask.isPresent(), HttpStatus.NOT_FOUND);
+        this.taskRepository.deleteById(id);
     }
 
     public void addNewTask(TaskCreationRequest taskCreationRequest) {
@@ -62,13 +49,10 @@ public class TaskService {
     }
 
     public void renameTaskById(Integer id, String newName) {
-        Optional<Task> task;
-        try {
-            task = this.taskRepository.findById(id);
-            task.get().setName(newName);
-            this.taskRepository.save(task.get());
-        } catch (EntityNotFoundException e) {
-            throw new EntityDoesNotExistException();
-        }
+        Optional<Task> optTask = this.taskRepository.findById(id);
+        Preconditions.checkArgument(optTask.isPresent(), HttpStatus.NOT_FOUND);
+        Task task = optTask.get();
+        task.setName(newName);
+        this.taskRepository.save(task);
     }
 }
