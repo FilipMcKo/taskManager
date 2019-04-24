@@ -3,7 +3,6 @@ package meelogic.filip.taskManager.controllers;
 import ma.glasnost.orika.MapperFacade;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
-import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.TaskService;
 import meelogic.filip.taskManager.services.TaskStateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +43,8 @@ public class TaskController {
 
     @PostMapping("/tasks")
     public ResponseEntity<String> newTask(@Valid TaskCreationRequest taskCreationRequest) {
-        taskService.addNewTask(taskCreationRequest);
-        return new ResponseEntity<>("Entity created", HttpStatus.CREATED);
+        Integer newTaskId = taskService.addNewTask(taskCreationRequest);
+        return new ResponseEntity<>(newTaskId.toString(), HttpStatus.CREATED);
     }
 
     @PutMapping("/tasks/{id}/rename")

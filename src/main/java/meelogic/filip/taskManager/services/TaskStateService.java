@@ -38,6 +38,6 @@ public class TaskStateService {
         optTask.get().setProgressPercentage(0.0);
         optTask.get().setTaskBeginTime(null);
         optTask.get().setNotRunning(true);
-        taskRepository.save(optTask.get());
+        taskRepository.save(task);
     }
 }

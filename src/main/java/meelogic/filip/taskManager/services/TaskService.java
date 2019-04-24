@@ -33,7 +33,7 @@ public class TaskService {
         this.taskRepository.deleteById(id);
     }
 
-    public void addNewTask(TaskCreationRequest taskCreationRequest) {
+    public Integer addNewTask(TaskCreationRequest taskCreationRequest) {
         Task task = new Task();
         task.setName(taskCreationRequest.getName());
         task.setDescription(taskCreationRequest.getDecription());
@@ -41,6 +41,7 @@ public class TaskService {
         task.setProgressPercentage(0.0);
         task.setNotRunning(true);
         this.taskRepository.save(task);
+        return task.getId();
     }
 
     public void renameTaskById(Integer id, String newName) {
