@@ -16,7 +16,6 @@ public class TaskManagerApplication {
                 .dataSource("jdbc:mysql://10.6.4.172:3306/taskManager", "root", "supersecret")
                 .baselineOnMigrate(true)
                 .load();
-        //flyway.repair();
         flyway.migrate();
         SpringApplication.run(TaskManagerApplication.class, args);
 
