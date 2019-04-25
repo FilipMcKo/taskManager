@@ -4,7 +4,7 @@ import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.entities.repository.TaskRepository;
+import meelogic.filip.taskManager.services.repository.TaskRepository;
 import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistException;
 import meelogic.filip.taskManager.services.exceptions.ForbiddenOperationException;
 import org.junit.jupiter.api.Test;
@@ -83,7 +83,6 @@ class TaskControllerTest {
     }
 
     @Test
-        //po co ten test jak i tak tę metodę już przerypałem 10 razy?
     void shouldCreateNewTask() {
         //given
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("createNewTestTask", "shouldCreateNewTask");
@@ -237,5 +236,4 @@ class TaskControllerTest {
 
         taskController.deleteTask(id);
     }
-
 }

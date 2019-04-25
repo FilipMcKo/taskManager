@@ -2,7 +2,7 @@ package meelogic.filip.taskManager.services;
 
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.entities.repository.TaskRepository;
+import meelogic.filip.taskManager.services.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
