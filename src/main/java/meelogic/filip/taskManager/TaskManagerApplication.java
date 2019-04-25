@@ -12,9 +12,13 @@ import java.util.List;
 public class TaskManagerApplication {
 
     public static void main(String[] args) {
-        Flyway flyway = new Flyway();
-        flyway.setDataSource("jdbc:mysql://10.6.4.172:3306/taskManager","root","supersecret");
+        Flyway flyway = Flyway.configure()
+                .dataSource("jdbc:mysql://10.6.4.172:3306/taskManager", "root", "supersecret")
+                .baselineOnMigrate(true)
+                .load();
+        //flyway.repair();
         flyway.migrate();
         SpringApplication.run(TaskManagerApplication.class, args);
+
     }
 }
