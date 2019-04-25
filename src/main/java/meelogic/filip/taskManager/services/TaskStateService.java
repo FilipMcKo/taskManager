@@ -24,7 +24,6 @@ public class TaskStateService {
 
         task.setTaskBeginTime(Instant.now().toEpochMilli());
         task.setCurrentState(State.RUNNING);
-        task.setNotRunning(false);
         taskRepository.save(task);
     }
 
@@ -37,7 +36,6 @@ public class TaskStateService {
         optTask.get().setCurrentState(State.CANCELLED);
         optTask.get().setProgressPercentage(0.0);
         optTask.get().setTaskBeginTime(null);
-        optTask.get().setNotRunning(true);
         taskRepository.save(task);
     }
 }

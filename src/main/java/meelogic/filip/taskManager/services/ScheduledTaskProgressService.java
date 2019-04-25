@@ -23,14 +23,13 @@ public class ScheduledTaskProgressService {
     }
 
     public void updateTaskProgress(Task task) {
-        if(task.isNotRunning){
+        if (task.getCurrentState()!=State.RUNNING) {
             return;
         }
         long currentDuration = Instant.now().toEpochMilli() - task.getTaskBeginTime();
         if (currentDuration >= taskDuration) {
             task.setCurrentState(State.FINISHED);
             task.setProgressPercentage(100.0);
-            task.setNotRunning(true);
         } else {
             double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) taskDuration * 100)
                     .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();

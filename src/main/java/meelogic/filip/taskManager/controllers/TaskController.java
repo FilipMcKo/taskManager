@@ -43,8 +43,8 @@ public class TaskController {
 
     @PostMapping("/tasks")
     public ResponseEntity<String> newTask(@Valid TaskCreationRequest taskCreationRequest) {
-        Integer newTaskId = taskService.addNewTask(taskCreationRequest);
-        return new ResponseEntity<>(newTaskId.toString(), HttpStatus.CREATED);
+        TaskDTO newTaskDTO = this.mapperFacade.map(taskService.addNewTask(taskCreationRequest),TaskDTO.class);
+        return new ResponseEntity<>(newTaskDTO.getId().toString(), HttpStatus.CREATED);
     }
 
     @PutMapping("/tasks/{id}/rename")

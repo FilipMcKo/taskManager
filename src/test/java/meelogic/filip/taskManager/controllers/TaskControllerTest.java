@@ -127,7 +127,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void shouldntAllowToStartRunningTask(){
+    void shouldntAllowToStartRunningTask() {
         //given
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldntAllowToStartRunningTask");
 
@@ -136,13 +136,13 @@ class TaskControllerTest {
         taskController.startTask(id);
 
         //then
-        assertThrows(ForbiddenOperationException.class, ()->taskController.startTask(id));
+        assertThrows(ForbiddenOperationException.class, () -> taskController.startTask(id));
 
         taskController.deleteTask(id);
     }
 
     @Test
-    void shouldtAllowToStartCancelledTask(){
+    void shouldtAllowToStartCancelledTask() {
         //given
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldtAllowToStartCancelledTask");
 
@@ -152,13 +152,13 @@ class TaskControllerTest {
         taskController.cancelTask(id);
 
         //then
-        assertThrows(ForbiddenOperationException.class, ()->taskController.startTask(id));
+        assertThrows(ForbiddenOperationException.class, () -> taskController.startTask(id));
 
         taskController.deleteTask(id);
     }
 
     @Test
-    void shouldtAllowToStartFinishedTask(){
+    void shouldtAllowToStartFinishedTask() {
         //given
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldtAllowToStartFinishedTask");
 
@@ -169,7 +169,7 @@ class TaskControllerTest {
         taskRepository.save(task);
 
         //then
-        assertThrows(ForbiddenOperationException.class, ()->taskController.startTask(id));
+        assertThrows(ForbiddenOperationException.class, () -> taskController.startTask(id));
 
         taskController.deleteTask(id);
     }
@@ -191,7 +191,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void shouldntAllowToCancelNewTask(){
+    void shouldntAllowToCancelNewTask() {
         //given
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldntAllowToCancelNewTask");
 
@@ -199,13 +199,13 @@ class TaskControllerTest {
         Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
 
         //then
-        assertThrows(ForbiddenOperationException.class, ()->taskController.cancelTask(id));
+        assertThrows(ForbiddenOperationException.class, () -> taskController.cancelTask(id));
 
         taskController.deleteTask(id);
     }
 
     @Test
-    void shouldntAllowToCancelCancelledTask(){
+    void shouldntAllowToCancelCancelledTask() {
         //given
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldntAllowToCancelCancelledTask");
 
@@ -215,13 +215,13 @@ class TaskControllerTest {
         taskController.cancelTask(id);
 
         //then
-        assertThrows(ForbiddenOperationException.class, ()->taskController.cancelTask(id));
+        assertThrows(ForbiddenOperationException.class, () -> taskController.cancelTask(id));
 
         taskController.deleteTask(id);
     }
 
     @Test
-    void shouldtAllowToCancelFinishedTask(){
+    void shouldtAllowToCancelFinishedTask() {
         //given
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldtAllowToCancelFinishedTask");
 
@@ -232,7 +232,7 @@ class TaskControllerTest {
         taskRepository.save(task);
 
         //then
-        assertThrows(ForbiddenOperationException.class, ()->taskController.cancelTask(id));
+        assertThrows(ForbiddenOperationException.class, () -> taskController.cancelTask(id));
 
         taskController.deleteTask(id);
     }

@@ -33,15 +33,14 @@ public class TaskService {
         this.taskRepository.deleteById(id);
     }
 
-    public Integer addNewTask(TaskCreationRequest taskCreationRequest) {
+    public Task addNewTask(TaskCreationRequest taskCreationRequest) {
         Task task = new Task();
         task.setName(taskCreationRequest.getName());
         task.setDescription(taskCreationRequest.getDecription());
         task.setCurrentState(State.NEW);
         task.setProgressPercentage(0.0);
-        task.setNotRunning(true);
         this.taskRepository.save(task);
-        return task.getId();
+        return task;
     }
 
     public void renameTaskById(Integer id, String newName) {
