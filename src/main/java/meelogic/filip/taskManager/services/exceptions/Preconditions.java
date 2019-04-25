@@ -1,15 +1,13 @@
 package meelogic.filip.taskManager.services.exceptions;
 
-import org.springframework.http.HttpStatus;
-
 public class Preconditions {
-    public static void checkArgument(boolean expression, HttpStatus httpStatus) {
+    public static void checkArgument(boolean expression, OperationStatus operationStatus) {
         if (!expression) {
-            if(httpStatus==HttpStatus.NOT_FOUND){
-                throw new EntityDoesNotExistException();
+            if(operationStatus==OperationStatus.ENTITY_NOT_FOUND){
+                throw new EntityDoesNotExistServiceException();
             }
-            else if(httpStatus==HttpStatus.FORBIDDEN){
-                throw new ForbiddenOperationException();
+            else if(operationStatus==OperationStatus.FORBIDDEN_OPERATION){
+                throw new ForbiddenOperationServiceException();
             }
         }
     }

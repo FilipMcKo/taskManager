@@ -5,8 +5,7 @@ import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
-import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistException;
-import meelogic.filip.taskManager.services.exceptions.ForbiddenOperationException;
+import meelogic.filip.taskManager.services.exceptions.ForbiddenOperationServiceException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +37,8 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest2 = new TaskCreationRequest("getAllTestTask2", "shouldGetAllTasks");
 
         //when
-        Integer id1 = Integer.parseInt(taskController.newTask(taskCreationRequest1).getBody());
-        Integer id2 = Integer.parseInt(taskController.newTask(taskCreationRequest2).getBody());
+        Integer id1 = Integer.parseInt(taskController.addNewTask(taskCreationRequest1).getBody());
+        Integer id2 = Integer.parseInt(taskController.addNewTask(taskCreationRequest2).getBody());
         TaskDTO taskDTO1 = new TaskDTO(id1, taskCreationRequest1.getName(), taskCreationRequest1.getDecription(), State.NEW, 0.0);
         TaskDTO taskDTO2 = new TaskDTO(id2, taskCreationRequest2.getName(), taskCreationRequest2.getDecription(), State.NEW, 0.0);
         List<TaskDTO> taskDTOList = taskController.getAllTasks();
@@ -48,8 +47,8 @@ class TaskControllerTest {
         assertAll(() -> assertTrue(taskDTOList.contains(taskDTO1)),
                 () -> assertTrue(taskDTOList.contains(taskDTO2)));
 
-        taskController.deleteTask(id1);
-        taskController.deleteTask(id2);
+        taskController.removeTaskById(id1);
+        taskController.removeTaskById(id2);
     }
 
     @Test
@@ -58,14 +57,14 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("getTestTask", "shouldGetTaskById");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
-        TaskDTO taskDTO = taskController.getTaskById(id);
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
+        TaskDTO taskDTO = taskController.getTaskById(id).getBody();
 
         //then
         assertAll(() -> assertEquals(taskCreationRequest.getName(), taskDTO.getName()),
                 () -> assertEquals(taskDTO.getDescription(), taskDTO.getDescription()));
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 
     @Test
@@ -74,12 +73,12 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("deleteTestTask", "shouldDeleteTaskById");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
         assertNotNull(taskController.getTaskById(id));
 
         //then
-        taskController.deleteTask(id);
-        assertThrows(EntityDoesNotExistException.class, () -> taskController.getTaskById(id));
+        taskController.removeTaskById(id);
+        assertNull(taskController.getTaskById(id).getBody());
     }
 
     @Test
@@ -88,12 +87,12 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("createNewTestTask", "shouldCreateNewTask");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
 
         //then
         assertNotNull(taskController.getTaskById(id));
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 
     @Test
@@ -102,13 +101,13 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("renameTestTask", "shouldRenameTask");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
-        taskController.renameTask(id, "renamedTask");
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
+        taskController.renameTaskById(id, "renamedTask");
 
         //then
-        assertEquals("renamedTask", taskController.getTaskById(id).getName());
+        assertEquals("renamedTask", taskController.getTaskById(id).getBody().getName());
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 
     @Test
@@ -117,13 +116,13 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldStartTask");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
-        taskController.startTask(id);
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
+        taskController.startProcessingTask(id);
 
         //then
-        assertEquals(State.RUNNING, taskController.getTaskById(id).getCurrentState());
+        assertEquals(State.RUNNING, taskController.getTaskById(id).getBody().getCurrentState());
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 
     @Test
@@ -132,13 +131,13 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldntAllowToStartRunningTask");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
-        taskController.startTask(id);
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
+        taskController.startProcessingTask(id);
 
         //then
-        assertThrows(ForbiddenOperationException.class, () -> taskController.startTask(id));
+        assertThrows(ForbiddenOperationServiceException.class, () -> taskController.startProcessingTask(id));
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 
     @Test
@@ -147,14 +146,14 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldtAllowToStartCancelledTask");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
-        taskController.startTask(id);
-        taskController.cancelTask(id);
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
+        taskController.startProcessingTask(id);
+        taskController.cancelProcessingTask(id);
 
         //then
-        assertThrows(ForbiddenOperationException.class, () -> taskController.startTask(id));
+        assertThrows(ForbiddenOperationServiceException.class, () -> taskController.startProcessingTask(id));
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 
     @Test
@@ -163,15 +162,15 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldtAllowToStartFinishedTask");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
         Task task = taskRepository.findById(id).get();
         task.setCurrentState(State.FINISHED);
         taskRepository.save(task);
 
         //then
-        assertThrows(ForbiddenOperationException.class, () -> taskController.startTask(id));
+        assertThrows(ForbiddenOperationServiceException.class, () -> taskController.startProcessingTask(id));
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 
     @Test
@@ -180,14 +179,14 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldCancellTask");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
-        taskController.startTask(id);
-        taskController.cancelTask(id);
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
+        taskController.startProcessingTask(id);
+        taskController.cancelProcessingTask(id);
 
         //then
-        assertEquals(State.CANCELLED, taskController.getTaskById(id).getCurrentState());
+        assertEquals(State.CANCELLED, taskController.getTaskById(id).getBody().getCurrentState());
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 
     @Test
@@ -196,12 +195,12 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldntAllowToCancelNewTask");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
 
         //then
-        assertThrows(ForbiddenOperationException.class, () -> taskController.cancelTask(id));
+        assertThrows(ForbiddenOperationException.class, () -> taskController.cancelProcessingTask(id));
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 
     @Test
@@ -210,14 +209,14 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldntAllowToCancelCancelledTask");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
-        taskController.startTask(id);
-        taskController.cancelTask(id);
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
+        taskController.startProcessingTask(id);
+        taskController.cancelProcessingTask(id);
 
         //then
-        assertThrows(ForbiddenOperationException.class, () -> taskController.cancelTask(id));
+        assertThrows(ForbiddenOperationException.class, () -> taskController.cancelProcessingTask(id));
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 
     @Test
@@ -226,14 +225,14 @@ class TaskControllerTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldtAllowToCancelFinishedTask");
 
         //when
-        Integer id = Integer.parseInt(taskController.newTask(taskCreationRequest).getBody());
+        Integer id = Integer.parseInt(taskController.addNewTask(taskCreationRequest).getBody());
         Task task = taskRepository.findById(id).get();
         task.setCurrentState(State.FINISHED);
         taskRepository.save(task);
 
         //then
-        assertThrows(ForbiddenOperationException.class, () -> taskController.cancelTask(id));
+        assertThrows(ForbiddenOperationException.class, () -> taskController.cancelProcessingTask(id));
 
-        taskController.deleteTask(id);
+        taskController.removeTaskById(id);
     }
 }
