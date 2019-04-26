@@ -1,6 +1,5 @@
 package meelogic.filip.taskManager.services;
 
-import meelogic.filip.taskManager.services.exceptions.OperationStatus;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
@@ -11,6 +10,9 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.Optional;
 
+import static meelogic.filip.taskManager.entities.internal.State.*;
+import static meelogic.filip.taskManager.services.exceptions.OperationStatus.*;
+
 @Service
 public class TaskStateService {
     @Autowired
@@ -18,8 +20,8 @@ public class TaskStateService {
 
     public void startProcessingTask(Integer id) {
         Optional<Task> optTask = taskRepository.findById(id);
-        Preconditions.checkArgument(optTask.isPresent(), OperationStatus.ENTITY_NOT_FOUND);
-        Preconditions.checkArgument(optTask.get().getCurrentState() == State.NEW, OperationStatus.FORBIDDEN_OPERATION);
+        Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
+        Preconditions.checkArgument(optTask.get().getCurrentState() == NEW, FORBIDDEN_OPERATION);
         optTask.ifPresent(this::startProcessingTask);
     }
 
@@ -31,8 +33,8 @@ public class TaskStateService {
 
     public void cancelProcessingTask(Integer id) {
         Optional<Task> optTask = taskRepository.findById(id);
-        Preconditions.checkArgument(optTask.isPresent(), OperationStatus.ENTITY_NOT_FOUND);
-        Preconditions.checkArgument(optTask.get().getCurrentState() == State.RUNNING, OperationStatus.FORBIDDEN_OPERATION);
+        Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
+        Preconditions.checkArgument(optTask.get().getCurrentState() == RUNNING, FORBIDDEN_OPERATION);
         optTask.ifPresent(this::cancelProcessingTask);
     }
 

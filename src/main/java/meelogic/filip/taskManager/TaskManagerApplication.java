@@ -18,6 +18,5 @@ public class TaskManagerApplication {
                 .load();
         flyway.migrate();
         SpringApplication.run(TaskManagerApplication.class, args);
-
     }
 }

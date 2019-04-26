@@ -7,7 +7,6 @@ import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.*;
 
 import java.util.Optional;
@@ -38,8 +37,7 @@ public class TaskService {
         task.setDescription(taskCreationRequest.getDecription());
         task.setCurrentState(State.NEW);
         task.setProgressPercentage(0.0);
-        this.taskRepository.save(task);
-        return task;
+        return this.taskRepository.save(task);
     }
 
     public void renameTaskById(Integer id, String newName) {

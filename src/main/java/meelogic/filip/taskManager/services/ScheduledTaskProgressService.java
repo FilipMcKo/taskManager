@@ -14,16 +14,16 @@ import java.time.Instant;
 @Component
 public class ScheduledTaskProgressService {
 
-    private long taskDuration = TaskDuration.REGULAR.getDuration();
     @Autowired
     private TaskRepository taskRepository;
+    private long taskDuration = TaskDuration.REGULAR.getDuration();
 
     public long getTaskDuration() {
         return taskDuration;
     }
 
     public void updateTaskProgress(Task task) {
-        if (task.getCurrentState()!=State.RUNNING) {
+        if (task.getCurrentState() != State.RUNNING) {
             return;
         }
         long currentDuration = Instant.now().toEpochMilli() - task.getTaskBeginTime();
