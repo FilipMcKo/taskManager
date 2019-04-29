@@ -9,9 +9,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Entity(name="task")
+@Entity(name = "task")
 public class Task {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,5 +20,4 @@ public class Task {
     private State currentState;
     private Double progressPercentage;
     private Long taskBeginTime;
-    public boolean isNotRunning;
 }

@@ -1,43 +1,47 @@
 package meelogic.filip.taskManager.services;
 
-import meelogic.filip.taskManager.entities.repository.TaskRepository;
+import meelogic.filip.taskManager.services.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Optional;
+
+import static meelogic.filip.taskManager.entities.internal.State.*;
+import static meelogic.filip.taskManager.services.exceptions.OperationStatus.*;
 
 @Service
 public class TaskStateService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public void startProcessing(Integer id) {
+    public void startProcessingTask(Integer id) {
         Optional<Task> optTask = taskRepository.findById(id);
-        Preconditions.checkArgument(optTask.isPresent(), HttpStatus.NOT_FOUND);
-        Task task = optTask.get();
-        Preconditions.checkArgument(task.getCurrentState() == State.NEW, HttpStatus.FORBIDDEN);
+        Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
+        Preconditions.checkArgument(optTask.get().getCurrentState() == NEW, FORBIDDEN_OPERATION);
+        optTask.ifPresent(this::startProcessingTask);
+    }
 
+    private void startProcessingTask(Task task) {
         task.setTaskBeginTime(Instant.now().toEpochMilli());
         task.setCurrentState(State.RUNNING);
-        task.setNotRunning(false);
         taskRepository.save(task);
     }
 
-    public void cancelProcessing(Integer id) {
+    public void cancelProcessingTask(Integer id) {
         Optional<Task> optTask = taskRepository.findById(id);
-        Preconditions.checkArgument(optTask.isPresent(), HttpStatus.NOT_FOUND);
-        Task task = optTask.get();
-        Preconditions.checkArgument(task.getCurrentState() == State.RUNNING, HttpStatus.FORBIDDEN);
+        Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
+        Preconditions.checkArgument(optTask.get().getCurrentState() == RUNNING, FORBIDDEN_OPERATION);
+        optTask.ifPresent(this::cancelProcessingTask);
+    }
 
-        optTask.get().setCurrentState(State.CANCELLED);
-        optTask.get().setProgressPercentage(0.0);
-        optTask.get().setTaskBeginTime(null);
-        optTask.get().setNotRunning(true);
+    private void cancelProcessingTask(Task task) {
+        task.setCurrentState(State.CANCELLED);
+        task.setProgressPercentage(0.0);
+        task.setTaskBeginTime(null);
         taskRepository.save(task);
     }
 }

@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OrikaConfig {
     @Bean
-    public MapperFacade getMapperFacade(){
+    public MapperFacade getMapperFacade() {
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
         mapperFactory.classMap(Task.class, TaskDTO.class).exclude("taskBeginTime").byDefault().register();
-        return  mapperFactory.getMapperFacade();
+        return mapperFactory.getMapperFacade();
     }
 }

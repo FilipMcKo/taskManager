@@ -2,7 +2,7 @@ package meelogic.filip.taskManager.services;
 
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.entities.repository.TaskRepository;
+import meelogic.filip.taskManager.services.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,11 +32,10 @@ class ScheduledTaskProgressServiceTest {
 
     @BeforeEach
     void setUp() {
-        task1 = new Task(1, "Task1", "Sample task nr one", State.NEW, 0.0, null,false);
-        task2 = new Task(2, "Task2", "Sample task nr two", State.NEW, 0.0, null,false);
-        task3 = new Task(3, "Task3", "Sample task nr three", State.NEW, 0.0, null,false);
-        task4 = new Task(4, "Task4", "Sample task nr four", State.NEW, 0.0, null,false);
-        task5 = new Task(4, "Task5", "Sample task nr five", State.NEW, 0.0, null,false);
+        task1 = new Task(1, "Task1", "Sample task nr one", State.RUNNING, 0.0, null);
+        task2 = new Task(2, "Task2", "Sample task nr two", State.RUNNING, 0.0, null);
+        task3 = new Task(3, "Task3", "Sample task nr three", State.RUNNING, 0.0, null);
+        task4 = new Task(4, "Task4", "Sample task nr four", State.RUNNING, 0.0, null);
         taskList = new LinkedList<>(Arrays.asList(task1, task2, task3));
         MockitoAnnotations.initMocks(this);
         Mockito.when(taskRepositoryMock.findAll()).thenReturn(this.taskList);
@@ -60,13 +59,10 @@ class ScheduledTaskProgressServiceTest {
         scheduledTaskProgressService.updateTaskProgress(task4);
         double progressPercentage4 = task4.getProgressPercentage();
 
-        double progressPercentage5 = task5.getProgressPercentage();
-
         assertAll(() -> assertTrue(50.0 <= progressPercentage1 && progressPercentage1 < 55.0),
                 () -> assertTrue(25.0 <= progressPercentage2 && progressPercentage2 < 30.0),
                 () -> assertTrue(0.0 <= progressPercentage3 && progressPercentage3 < 5.0),
-                () -> assertEquals(100.0, progressPercentage4),
-                () -> assertEquals(0.0, progressPercentage5));
+                () -> assertEquals(100.0, progressPercentage4));
     }
 
     @Test
