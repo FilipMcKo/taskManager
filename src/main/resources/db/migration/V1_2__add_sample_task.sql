@@ -1,1 +1,0 @@
-insert into task (name) values ('ITask');
