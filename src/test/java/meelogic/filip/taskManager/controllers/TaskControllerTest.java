@@ -7,6 +7,7 @@ import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
+import org.junit.ClassRule;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class TaskControllerTest {
-
+   /* @ClassRule
+    public static DockerComposeRule docker = DockerComposeRule.builder()
+            .file("src/test/resources/docker-compose.yml")
+            .build();*/
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
