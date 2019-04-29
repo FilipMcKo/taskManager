@@ -1,1 +1,0 @@
-ALTER TABLE task DROP COLUMN is_not_running;
