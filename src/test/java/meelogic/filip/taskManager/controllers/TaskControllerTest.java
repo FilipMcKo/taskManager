@@ -1,5 +1,6 @@
 package meelogic.filip.taskManager.controllers;
 
+//import com.palantir.docker.compose.DockerComposeRule;
 import meelogic.filip.taskManager.controllers.responseStatusExceptions.EntityDoesNotExistException;
 import meelogic.filip.taskManager.controllers.responseStatusExceptions.ForbiddenOperationException;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -20,15 +22,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 class TaskControllerTest {
-   /* @ClassRule
-    public static DockerComposeRule docker = DockerComposeRule.builder()
-            .file("src/test/resources/docker-compose.yml")
-            .build();*/
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
     private TaskController taskController;
+
+
+    @ClassRule
+    public static DockerComposeRule docker = DockerComposeRule.builder().file("src/test/resources/docker-compose.yml").build();
 
     @Test
     void shouldLoadContext() {
