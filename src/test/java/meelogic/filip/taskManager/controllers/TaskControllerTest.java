@@ -1,6 +1,6 @@
 package meelogic.filip.taskManager.controllers;
 
-//import com.palantir.docker.compose.DockerComposeRule;
+import com.palantir.docker.compose.DockerComposeRule;
 import meelogic.filip.taskManager.controllers.responseStatusExceptions.EntityDoesNotExistException;
 import meelogic.filip.taskManager.controllers.responseStatusExceptions.ForbiddenOperationException;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
@@ -33,7 +33,7 @@ class TaskControllerTest {
     @ClassRule
     public static DockerComposeRule docker = DockerComposeRule.builder().file("src/test/resources/docker-compose.yml").build();
 
-    @Test
+    @Test 
     void shouldLoadContext() {
         assertNotNull(taskController);
     }
