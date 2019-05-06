@@ -17,6 +17,9 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private TaskQueueService taskQueueService;
+
     public Iterable<Task> getAllTasks() {
         return taskRepository.findAll();
     }
@@ -37,6 +40,7 @@ public class TaskService {
         task.setDescription(taskCreationRequest.getDecription());
         task.setCurrentState(State.NEW);
         task.setProgressPercentage(0.0);
+        taskQueueService.publishToQueue(task);
         return this.taskRepository.save(task);
     }
 
