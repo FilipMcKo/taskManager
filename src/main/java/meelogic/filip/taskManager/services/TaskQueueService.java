@@ -16,22 +16,16 @@ public class TaskQueueService {
 
     private final static String QUEUE_NAME = "Finished tasks";
     Logger logger = LoggerFactory.getLogger(SLF4JLogger.class);
-/*
+
     @Autowired
-    ConnectionFactory factory;*/
+    ConnectionFactory factory;
 
     void publishToQueue(Task task) {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("10.6.4.172");
-        //factory.setPort(15672);
-        factory.setUsername("root");
-        factory.setPassword("root");
-        logger.info("RabbitMQ: ConnectionFactory set on 10.6.4.172:15672");
         try {
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-            logger.info("RabbitMQ: queque created");
+            logger.info("RabbitMQ: queque declare");
             channel.basicPublish("", QUEUE_NAME, null, task.toString().getBytes());
             channel.close();
             logger.info("RabbitMQ: channel closed");
