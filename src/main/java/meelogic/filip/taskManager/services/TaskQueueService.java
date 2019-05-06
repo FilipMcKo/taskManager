@@ -21,9 +21,14 @@ public class TaskQueueService {
     ConnectionFactory factory;*/
 
     void publishToQueue(Task task) {
+        Address[] addrArr = new Address[]{new Address("10.6.4.172",15672),new Address("10.6.4.172",15671),
+                new Address("10.6.4.172",5672),new Address("10.6.4.172",5671),new Address("10.6.4.172",15672),
+                new Address("10.6.4.172",4369),new Address("10.6.4.172",25672),new Address("localhost",15672),
+                new Address("localhost",15671), new Address("localhost",5672),new Address("localhost",5671),
+                new Address("localhost",15672), new Address("localhost",4369),new Address("localhost",25672)};
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("10.6.4.172");
-        //factory.setPort(15672);
+        factory.setPort(15672);
         factory.setUsername("root");
         factory.setPassword("root");
         logger.info("RabbitMQ: ConnectionFactory set on 10.6.4.172:15672");
