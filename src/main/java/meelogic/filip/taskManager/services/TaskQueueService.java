@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.concurrent.TimeoutException;
 
 @Service
@@ -28,15 +31,22 @@ public class TaskQueueService {
             logger.info("RabbitMQ: channel opened");
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
             logger.info("RabbitMQ: queue declared");
-            channel.basicPublish("", QUEUE_NAME, null, task.toString().getBytes());
+            channel.basicPublish("", QUEUE_NAME, null, this.taskToByteArray(task));
             logger.info("RabbitMQ: object added to queue");
             channel.close();
             logger.info("RabbitMQ: channel closed");
             connection.close();
             logger.info("RabbitMQ: connection closed");
-            //TODO: Task powinien być serializowalny, żebym mógł go prawidłowo podawać do kolejki
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
         }
+    }
+
+    byte[] taskToByteArray(Task task) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(task);
+        objectOutputStream.flush();
+        return byteArrayOutputStream.toByteArray();
     }
 }

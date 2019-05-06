@@ -17,9 +17,6 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired
-    private TaskQueueService taskQueueService;
-
     public Iterable<Task> getAllTasks() {
         return taskRepository.findAll();
     }
