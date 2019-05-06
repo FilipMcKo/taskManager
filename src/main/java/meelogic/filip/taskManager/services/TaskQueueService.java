@@ -23,10 +23,13 @@ public class TaskQueueService {
     void publishToQueue(Task task) {
         try {
             Connection connection = factory.newConnection();
+            logger.info("RabbitMQ: connection opened");
             Channel channel = connection.createChannel();
+            logger.info("RabbitMQ: channel opened");
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-            logger.info("RabbitMQ: queque declare");
+            logger.info("RabbitMQ: queue declared");
             channel.basicPublish("", QUEUE_NAME, null, task.toString().getBytes());
+            logger.info("RabbitMQ: object added to queue");
             channel.close();
             logger.info("RabbitMQ: channel closed");
             connection.close();
@@ -35,6 +38,5 @@ public class TaskQueueService {
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
         }
-
     }
 }

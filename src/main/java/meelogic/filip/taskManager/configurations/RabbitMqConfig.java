@@ -16,6 +16,8 @@ public class RabbitMqConfig {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername("root");
         factory.setPassword("root");
+        factory.setHost("10.6.4.172");
+        factory.setPort(5672);
         logger.info("RabbitMQ: ConnectionFactory set on 10.6.4.172");
         return factory;
     }
