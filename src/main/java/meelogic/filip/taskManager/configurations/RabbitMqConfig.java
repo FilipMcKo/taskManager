@@ -2,9 +2,10 @@ package meelogic.filip.taskManager.configurations;
 
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class RabbitMqConfig {
-    private final static String QUEUE_NAME = "Finished tasks";
 
     @Bean
     public ConnectionFactory getConnectionFactory(){

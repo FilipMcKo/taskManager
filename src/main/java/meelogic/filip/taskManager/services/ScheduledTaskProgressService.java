@@ -16,6 +16,7 @@ public class ScheduledTaskProgressService {
 
     @Autowired
     private TaskRepository taskRepository;
+
     private long taskDuration = TaskDuration.REGULAR.getDuration();
 
     public long getTaskDuration() {
