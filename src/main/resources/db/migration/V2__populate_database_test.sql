@@ -1,1 +1,0 @@
-insert into task (name, current_state, is_not_running) values ('ITask','NEW',1);

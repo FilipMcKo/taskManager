@@ -1,9 +1,8 @@
 create table task (
 id                  INT auto_increment primary key,
-name                varchar(255),
+name                varchar(255) NOT NULL,
 description         varchar(255),
-currentState        varchar(255),
-progressPercentage  double,
-taskBeginTime       bigint,
-isNotRunning        bit(1)
+current_state        varchar(255) NOT NULL,
+progress_percentage  double,
+task_begin_time       bigint
 );

@@ -13,3 +13,4 @@ Web based app with basic REST API endpoints to manage various tasks. Connected t
 9. Hibernate
 10. Docker
 11. Flyway
+12. RabbitMQ
