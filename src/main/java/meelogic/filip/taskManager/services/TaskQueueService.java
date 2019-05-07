@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.concurrent.TimeoutException;
@@ -18,6 +17,8 @@ import java.util.concurrent.TimeoutException;
 public class TaskQueueService {
 
     private final static String QUEUE_NAME = "Finished tasks";
+    private final static String SPARE_QUEUE_NAME = "Spare queue";
+    private final static String EXCHANGE_NAME = "Fanout exchange";
     Logger logger = LoggerFactory.getLogger(SLF4JLogger.class);
 
     @Autowired
@@ -29,10 +30,20 @@ public class TaskQueueService {
             logger.info("RabbitMQ: connection opened");
             Channel channel = connection.createChannel();
             logger.info("RabbitMQ: channel opened");
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+
+            channel.queueDeclare(QUEUE_NAME, false, false, true, null);
+            channel.queueDeclare(SPARE_QUEUE_NAME, false, false, true, null);
             logger.info("RabbitMQ: queue declared");
-            channel.basicPublish("", QUEUE_NAME, null, this.taskToByteArray(task));
-            logger.info("RabbitMQ: object added to queue");
+            channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+            logger.info("RabbitMQ: fanout exchange declared");
+
+            channel.queueBind(QUEUE_NAME,EXCHANGE_NAME,"");
+            channel.queueBind(SPARE_QUEUE_NAME,EXCHANGE_NAME,"");
+            logger.info("RabbitMQ: exchange bound to queues");
+
+            channel.basicPublish(EXCHANGE_NAME, "", null, this.taskToByteArray(task));
+            logger.info("RabbitMQ: object published to exchange");
+
             channel.close();
             logger.info("RabbitMQ: channel closed");
             connection.close();
