@@ -11,6 +11,9 @@ import meelogic.filip.taskManager.services.TaskStateService;
 import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistServiceException;
 import meelogic.filip.taskManager.services.exceptions.ForbiddenOperationServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +32,21 @@ public class TaskController {
     private TaskStateService taskStateService;
     @Autowired
     private MapperFacade mapperFacade;
+
+    /**
+     * TODO:
+     * Nie powinienem udostepniam klasy Task a TaskDTO
+     * - pierwszy pomysł to streamy ale nie mogę do nowego obiektu Page<TaskDTO> tak po prostu przypisać elementów
+     * - drugi pomysł to po prostu zwracanie listy tak jak poprzednio z tym, że z taskRepository dostaję Page, którą parsuję na List
+     *   czyli zakres elementów by się zgadzał - NA RAZIE WYGLADA NA TO, ŻE DZIAŁA
+     */
+
+    @GetMapping("/tasksPage")
+    public List<TaskDTO> getAllTasksPaged(@RequestParam(defaultValue = "0") int page) {
+        List<TaskDTO> taskDTOList = new LinkedList<>();
+        taskService.getAllTasksPaged(PageRequest.of(page,4)).forEach(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
+        return taskDTOList;
+    }
 
     @GetMapping("/tasks")
     public List<TaskDTO> getAllTasks() {
