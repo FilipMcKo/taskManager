@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 public class TaskController {
 
     @Autowired
@@ -39,13 +40,16 @@ public class TaskController {
      * - pierwszy pomysł to streamy ale nie mogę do nowego obiektu Page<TaskDTO> tak po prostu przypisać elementów
      * - drugi pomysł to po prostu zwracanie listy tak jak poprzednio z tym, że z taskRepository dostaję Page, którą parsuję na List
      *   czyli zakres elementów by się zgadzał - NA RAZIE WYGLADA NA TO, ŻE DZIAŁA
+     *
+     *   uwaga: wprowadzam spowrotem wyświetlanie taksów a nie taskDTO bo cos mi we fronci enie wychodzi tak jak chcę i to może być to
+     *   no i zadziałało jak zacząłem zwracać page zamiast list. Także muszę jednak zmapować jakoś obiekty w obrębie page  - ale to na później
      */
 
     @GetMapping("/tasksPage")
-    public List<TaskDTO> getAllTasksPaged(@RequestParam(defaultValue = "0") int page) {
+    public Page<Task> getAllTasksPaged(@RequestParam(defaultValue = "0") int page) {
         List<TaskDTO> taskDTOList = new LinkedList<>();
         taskService.getAllTasksPaged(PageRequest.of(page,4)).forEach(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
-        return taskDTOList;
+        return taskService.getAllTasksPaged(PageRequest.of(page,4));
     }
 
     @GetMapping("/tasks")
