@@ -11,6 +11,9 @@ import meelogic.filip.taskManager.services.TaskStateService;
 import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistServiceException;
 import meelogic.filip.taskManager.services.exceptions.ForbiddenOperationServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 public class TaskController {
 
     @Autowired
@@ -29,6 +33,24 @@ public class TaskController {
     private TaskStateService taskStateService;
     @Autowired
     private MapperFacade mapperFacade;
+
+    /**
+     * TODO:
+     * Nie powinienem udostepniam klasy Task a TaskDTO
+     * - pierwszy pomysł to streamy ale nie mogę do nowego obiektu Page<TaskDTO> tak po prostu przypisać elementów
+     * - drugi pomysł to po prostu zwracanie listy tak jak poprzednio z tym, że z taskRepository dostaję Page, którą parsuję na List
+     *   czyli zakres elementów by się zgadzał - NA RAZIE WYGLADA NA TO, ŻE DZIAŁA
+     *
+     *   uwaga: wprowadzam spowrotem wyświetlanie taksów a nie taskDTO bo cos mi we fronci enie wychodzi tak jak chcę i to może być to
+     *   no i zadziałało jak zacząłem zwracać page zamiast list. Także muszę jednak zmapować jakoś obiekty w obrębie page  - ale to na później
+     */
+
+    @GetMapping("/tasksPage")
+    public Page<Task> getAllTasksPaged(@RequestParam(defaultValue = "0") int page) {
+        List<TaskDTO> taskDTOList = new LinkedList<>();
+        taskService.getAllTasksPaged(PageRequest.of(page,4)).map(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
+        return taskService.getAllTasksPaged(PageRequest.of(page,4));
+    }
 
     @GetMapping("/tasks")
     public List<TaskDTO> getAllTasks() {
@@ -71,7 +93,7 @@ public class TaskController {
     }
 
     @PutMapping("/tasks/{id}/start")
-    public void startProcessingTask(@PathVariable Integer id) {
+    public TaskDTO startProcessingTask(@PathVariable Integer id) {
         try {
             taskStateService.startProcessingTask(id);
         } catch (ForbiddenOperationServiceException e) {
@@ -79,10 +101,11 @@ public class TaskController {
         } catch (EntityDoesNotExistServiceException e) {
             throw new EntityDoesNotExistException();
         }
+        return this.mapperFacade.map(taskService.getTaskById(id), TaskDTO.class);
     }
 
     @PutMapping("/tasks/{id}/cancel")
-    public void cancelProcessingTask(@PathVariable Integer id) {
+    public TaskDTO cancelProcessingTask(@PathVariable Integer id) {
         try {
             taskStateService.cancelProcessingTask(id);
         } catch (ForbiddenOperationServiceException e) {
@@ -90,5 +113,7 @@ public class TaskController {
         } catch (EntityDoesNotExistServiceException e) {
             throw new EntityDoesNotExistException();
         }
+
+        return this.mapperFacade.map(taskService.getTaskById(id), TaskDTO.class);
     }
 }
