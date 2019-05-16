@@ -1,4 +1,4 @@
-package meelogic.filip.taskManager.services.exceptions;
+package meelogic.filip.taskManager.controllers.responseStatusExceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

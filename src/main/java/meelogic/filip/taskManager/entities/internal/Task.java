@@ -5,13 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Entity(name="task")
-public class Task {
-
+@Entity(name = "task")
+public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,5 +21,4 @@ public class Task {
     private State currentState;
     private Double progressPercentage;
     private Long taskBeginTime;
-    public boolean isNotRunning;
 }
