@@ -33,10 +33,10 @@ class TaskControllerTest {
     @Autowired
     private TaskController taskController;
 
-    @ClassRule
+/*    @ClassRule
     public static DockerComposeRule docker = DockerComposeRule.builder()
             .file("src/test/resources/docker-compose.yml")
-            .build();
+            .build();*/
 
     @Test
     void shouldLoadContext() {

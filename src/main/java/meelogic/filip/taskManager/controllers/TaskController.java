@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
+@CrossOrigin
 public class TaskController {
 
     @Autowired
@@ -48,7 +48,7 @@ public class TaskController {
     @GetMapping("/tasksPage")
     public Page<Task> getAllTasksPaged(@RequestParam(defaultValue = "0") int page) {
         List<TaskDTO> taskDTOList = new LinkedList<>();
-        taskService.getAllTasksPaged(PageRequest.of(page,4)).forEach(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
+        taskService.getAllTasksPaged(PageRequest.of(page,4)).map(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
         return taskService.getAllTasksPaged(PageRequest.of(page,4));
     }
 
@@ -93,7 +93,7 @@ public class TaskController {
     }
 
     @PutMapping("/tasks/{id}/start")
-    public void startProcessingTask(@PathVariable Integer id) {
+    public TaskDTO startProcessingTask(@PathVariable Integer id) {
         try {
             taskStateService.startProcessingTask(id);
         } catch (ForbiddenOperationServiceException e) {
@@ -101,10 +101,11 @@ public class TaskController {
         } catch (EntityDoesNotExistServiceException e) {
             throw new EntityDoesNotExistException();
         }
+        return this.mapperFacade.map(taskService.getTaskById(id), TaskDTO.class);
     }
 
     @PutMapping("/tasks/{id}/cancel")
-    public void cancelProcessingTask(@PathVariable Integer id) {
+    public TaskDTO cancelProcessingTask(@PathVariable Integer id) {
         try {
             taskStateService.cancelProcessingTask(id);
         } catch (ForbiddenOperationServiceException e) {
@@ -112,5 +113,7 @@ public class TaskController {
         } catch (EntityDoesNotExistServiceException e) {
             throw new EntityDoesNotExistException();
         }
+
+        return this.mapperFacade.map(taskService.getTaskById(id), TaskDTO.class);
     }
 }
