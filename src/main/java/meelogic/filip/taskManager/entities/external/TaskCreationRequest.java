@@ -12,5 +12,5 @@ public class TaskCreationRequest {
     @NotNull
     @Size(min = 2, max = 30)
     String name;
-    String decription;
+    String description;
 }

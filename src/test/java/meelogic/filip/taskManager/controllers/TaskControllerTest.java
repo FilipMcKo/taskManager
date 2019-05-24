@@ -1,9 +1,5 @@
 package meelogic.filip.taskManager.controllers;
 
-import com.palantir.docker.compose.DockerComposeRule;
-import com.palantir.docker.compose.configuration.DockerComposeFiles;
-import com.palantir.docker.compose.connection.waiting.ClusterWait;
-import com.palantir.docker.compose.connection.waiting.HealthChecks;
 import meelogic.filip.taskManager.controllers.responseStatusExceptions.EntityDoesNotExistException;
 import meelogic.filip.taskManager.controllers.responseStatusExceptions.ForbiddenOperationException;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
@@ -11,13 +7,10 @@ import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
-import org.junit.ClassRule;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -52,8 +45,8 @@ class TaskControllerTest {
         //when
         Integer id1 = taskController.addNewTask(taskCreationRequest1).getBody().getId();
         Integer id2 = taskController.addNewTask(taskCreationRequest2).getBody().getId();
-        TaskDTO taskDTO1 = new TaskDTO(id1, taskCreationRequest1.getName(), taskCreationRequest1.getDecription(), State.NEW, 0.0);
-        TaskDTO taskDTO2 = new TaskDTO(id2, taskCreationRequest2.getName(), taskCreationRequest2.getDecription(), State.NEW, 0.0);
+        TaskDTO taskDTO1 = new TaskDTO(id1, taskCreationRequest1.getName(), taskCreationRequest1.getDescription(), State.NEW, 0.0);
+        TaskDTO taskDTO2 = new TaskDTO(id2, taskCreationRequest2.getName(), taskCreationRequest2.getDescription(), State.NEW, 0.0);
         List<TaskDTO> taskDTOList = taskController.getAllTasks();
 
         //then

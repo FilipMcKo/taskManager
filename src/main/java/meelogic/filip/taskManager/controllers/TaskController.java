@@ -5,11 +5,15 @@ import meelogic.filip.taskManager.controllers.responseStatusExceptions.EntityDoe
 import meelogic.filip.taskManager.controllers.responseStatusExceptions.ForbiddenOperationException;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
+import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.TaskService;
 import meelogic.filip.taskManager.services.TaskStateService;
 import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistServiceException;
 import meelogic.filip.taskManager.services.exceptions.ForbiddenOperationServiceException;
+import org.apache.logging.slf4j.SLF4JLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +30,8 @@ import java.util.Optional;
 @RestController
 @CrossOrigin
 public class TaskController {
+
+    Logger logger = LoggerFactory.getLogger(SLF4JLogger.class);
 
     @Autowired
     private TaskService taskService;
@@ -69,16 +75,17 @@ public class TaskController {
     }
 
     @DeleteMapping("/tasks/{id}")
-    public void removeTaskById(@PathVariable Integer id) {
+    public ResponseEntity<Integer> removeTaskById(@PathVariable Integer id) {
         try {
             taskService.removeTaskById(id);
+            return new ResponseEntity<>(id,HttpStatus.OK);
         } catch (EntityDoesNotExistServiceException e) {
             throw new EntityDoesNotExistException();
         }
     }
 
     @PostMapping("/tasks")
-    public ResponseEntity<TaskDTO> addNewTask(@Valid TaskCreationRequest taskCreationRequest) {
+    public ResponseEntity<TaskDTO> addNewTask(@Valid @RequestBody TaskCreationRequest taskCreationRequest) {
         TaskDTO newTaskDTO = this.mapperFacade.map(taskService.addNewTask(taskCreationRequest), TaskDTO.class);
         return new ResponseEntity<>(newTaskDTO, HttpStatus.CREATED);
     }
@@ -101,7 +108,7 @@ public class TaskController {
         } catch (EntityDoesNotExistServiceException e) {
             throw new EntityDoesNotExistException();
         }
-        return this.mapperFacade.map(taskService.getTaskById(id), TaskDTO.class);
+        return this.mapperFacade.map(taskService.getTaskById(id).get(), TaskDTO.class);
     }
 
     @PutMapping("/tasks/{id}/cancel")
@@ -114,6 +121,6 @@ public class TaskController {
             throw new EntityDoesNotExistException();
         }
 
-        return this.mapperFacade.map(taskService.getTaskById(id), TaskDTO.class);
+        return this.mapperFacade.map(taskService.getTaskById(id).get(), TaskDTO.class);
     }
 }

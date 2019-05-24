@@ -34,7 +34,7 @@ public class ScheduledTaskProgressService {
         if (currentDuration >= taskDuration) {
             task.setCurrentState(State.FINISHED);
             task.setProgressPercentage(100.0);
-            taskQueueService.publishToQueue(task);
+            //taskQueueService.publishToQueue(task);
         } else {
             double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) taskDuration * 100)
                     .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();

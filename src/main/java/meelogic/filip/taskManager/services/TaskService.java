@@ -8,7 +8,6 @@ import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.*;
 
@@ -41,7 +40,7 @@ public class TaskService {
     public Task addNewTask(TaskCreationRequest taskCreationRequest) {
         Task task = new Task();
         task.setName(taskCreationRequest.getName());
-        task.setDescription(taskCreationRequest.getDecription());
+        task.setDescription(taskCreationRequest.getDescription());
         task.setCurrentState(State.NEW);
         task.setProgressPercentage(0.0);
         return this.taskRepository.save(task);
