@@ -5,19 +5,15 @@ import meelogic.filip.taskManager.controllers.responseStatusExceptions.EntityDoe
 import meelogic.filip.taskManager.controllers.responseStatusExceptions.ForbiddenOperationException;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
-import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.TaskService;
 import meelogic.filip.taskManager.services.TaskStateService;
 import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistServiceException;
 import meelogic.filip.taskManager.services.exceptions.ForbiddenOperationServiceException;
-import org.apache.logging.slf4j.SLF4JLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +27,6 @@ import java.util.Optional;
 @CrossOrigin
 public class TaskController {
 
-    Logger logger = LoggerFactory.getLogger(SLF4JLogger.class);
-
     @Autowired
     private TaskService taskService;
     @Autowired
@@ -40,22 +34,17 @@ public class TaskController {
     @Autowired
     private MapperFacade mapperFacade;
 
-    /**
-     * TODO:
-     * Nie powinienem udostepniam klasy Task a TaskDTO
-     * - pierwszy pomysł to streamy ale nie mogę do nowego obiektu Page<TaskDTO> tak po prostu przypisać elementów
-     * - drugi pomysł to po prostu zwracanie listy tak jak poprzednio z tym, że z taskRepository dostaję Page, którą parsuję na List
-     *   czyli zakres elementów by się zgadzał - NA RAZIE WYGLADA NA TO, ŻE DZIAŁA
-     *
-     *   uwaga: wprowadzam spowrotem wyświetlanie taksów a nie taskDTO bo cos mi we fronci enie wychodzi tak jak chcę i to może być to
-     *   no i zadziałało jak zacząłem zwracać page zamiast list. Także muszę jednak zmapować jakoś obiekty w obrębie page  - ale to na później
-     */
+    @GetMapping("/tasksPageSorted")
+    public Page<TaskDTO> getAllTasksPagedAndSorted(@RequestParam(defaultValue = "0") int pageNr,
+                                                @RequestParam(defaultValue = "id") String key,
+                                                @RequestParam(defaultValue = "true") String desc) {
+        if (desc.equals("true")) {
+            Page<Task> page = taskService.getAllTasksPagedAndSorted(PageRequest.of(pageNr, 5, Sort.by(key).descending()));
+            return page.map(source -> mapperFacade.map(source, TaskDTO.class));
+        }
 
-    @GetMapping("/tasksPage")
-    public Page<Task> getAllTasksPaged(@RequestParam(defaultValue = "0") int page) {
-        List<TaskDTO> taskDTOList = new LinkedList<>();
-        taskService.getAllTasksPaged(PageRequest.of(page,4)).map(task -> taskDTOList.add(this.mapperFacade.map(task, TaskDTO.class)));
-        return taskService.getAllTasksPaged(PageRequest.of(page,4));
+        Page<Task> page = taskService.getAllTasksPagedAndSorted(PageRequest.of(pageNr, 5, Sort.by(key).ascending()));
+        return page.map(source -> mapperFacade.map(source, TaskDTO.class));
     }
 
     @GetMapping("/tasks")
@@ -78,7 +67,7 @@ public class TaskController {
     public ResponseEntity<Integer> removeTaskById(@PathVariable Integer id) {
         try {
             taskService.removeTaskById(id);
-            return new ResponseEntity<>(id,HttpStatus.OK);
+            return new ResponseEntity<>(id, HttpStatus.OK);
         } catch (EntityDoesNotExistServiceException e) {
             throw new EntityDoesNotExistException();
         }

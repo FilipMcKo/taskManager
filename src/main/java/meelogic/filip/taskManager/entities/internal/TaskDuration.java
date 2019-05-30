@@ -1,7 +1,7 @@
 package meelogic.filip.taskManager.entities.internal;
 
 public enum TaskDuration {
-    SHORT(5000L), REGULAR(30000L), LONG(300000L);
+    SHORT(5000L), REGULAR(15000L), LONG(300000L);
 
     private final long duration;
 

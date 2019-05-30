@@ -8,6 +8,7 @@ import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.*;
 
@@ -25,6 +26,11 @@ public class TaskService {
 
     public Page<Task> getAllTasksPaged(Pageable pageable){
         return taskRepository.findAll(pageable);
+    }
+
+    public Page<Task> getAllTasksPagedAndSorted(Pageable pageable) {
+        return taskRepository.findAll(pageable);
+
     }
 
     public Optional<Task> getTaskById(Integer id) {
