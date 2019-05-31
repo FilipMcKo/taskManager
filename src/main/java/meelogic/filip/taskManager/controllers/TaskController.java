@@ -63,6 +63,12 @@ public class TaskController {
         return this.mapperFacade.map(optTask.get(), TaskDTO.class);
     }
 
+    @PostMapping("/tasks")
+    public ResponseEntity<TaskDTO> addNewTask(@Valid @RequestBody TaskCreationRequest taskCreationRequest) {
+        TaskDTO newTaskDTO = this.mapperFacade.map(taskService.addNewTask(taskCreationRequest), TaskDTO.class);
+        return new ResponseEntity<>(newTaskDTO, HttpStatus.CREATED);
+    }
+
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<Integer> removeTaskById(@PathVariable Integer id) {
         try {
@@ -71,12 +77,6 @@ public class TaskController {
         } catch (EntityDoesNotExistServiceException e) {
             throw new EntityDoesNotExistException();
         }
-    }
-
-    @PostMapping("/tasks")
-    public ResponseEntity<TaskDTO> addNewTask(@Valid @RequestBody TaskCreationRequest taskCreationRequest) {
-        TaskDTO newTaskDTO = this.mapperFacade.map(taskService.addNewTask(taskCreationRequest), TaskDTO.class);
-        return new ResponseEntity<>(newTaskDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/tasks/{id}/rename")
@@ -109,7 +109,6 @@ public class TaskController {
         } catch (EntityDoesNotExistServiceException e) {
             throw new EntityDoesNotExistException();
         }
-
         return this.mapperFacade.map(taskService.getTaskById(id).get(), TaskDTO.class);
     }
 }
