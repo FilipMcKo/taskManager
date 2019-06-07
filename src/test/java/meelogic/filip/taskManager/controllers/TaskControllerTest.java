@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 //@ActiveProfiles("test")
-class TaskControllerTest {
+public class TaskControllerTest {
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
