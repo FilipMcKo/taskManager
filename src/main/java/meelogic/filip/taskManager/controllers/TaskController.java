@@ -36,8 +36,8 @@ public class TaskController {
 
     @GetMapping("/tasksPageSorted")
     public Page<TaskDTO> getAllTasksPagedAndSorted(@RequestParam(defaultValue = "0") int pageNr,
-                                                @RequestParam(defaultValue = "id") String key,
-                                                @RequestParam(defaultValue = "true") String desc) {
+                                                   @RequestParam(defaultValue = "id") String key,
+                                                   @RequestParam(defaultValue = "true") String desc) {
         if (desc.equals("true")) {
             Page<Task> page = taskService.getAllTasksPagedAndSorted(PageRequest.of(pageNr, 5, Sort.by(key).descending()));
             return page.map(source -> mapperFacade.map(source, TaskDTO.class));
@@ -71,44 +71,24 @@ public class TaskController {
 
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<Integer> removeTaskById(@PathVariable Integer id) {
-        try {
-            taskService.removeTaskById(id);
-            return new ResponseEntity<>(id, HttpStatus.OK);
-        } catch (EntityDoesNotExistServiceException e) {
-            throw new EntityDoesNotExistException();
-        }
+        taskService.removeTaskById(id);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
     @PutMapping("/tasks/{id}/rename")
     public void renameTaskById(@PathVariable Integer id, @RequestBody String newName) {
-        try {
-            taskService.renameTaskById(id, newName);
-        } catch (EntityDoesNotExistServiceException e) {
-            throw new EntityDoesNotExistException();
-        }
+        taskService.renameTaskById(id, newName);
     }
 
     @PutMapping("/tasks/{id}/start")
     public TaskDTO startProcessingTask(@PathVariable Integer id) {
-        try {
-            taskStateService.startProcessingTask(id);
-        } catch (ForbiddenOperationServiceException e) {
-            throw new ForbiddenOperationException();
-        } catch (EntityDoesNotExistServiceException e) {
-            throw new EntityDoesNotExistException();
-        }
+        taskStateService.startProcessingTask(id);
         return this.mapperFacade.map(taskService.getTaskById(id).get(), TaskDTO.class);
     }
 
     @PutMapping("/tasks/{id}/cancel")
     public TaskDTO cancelProcessingTask(@PathVariable Integer id) {
-        try {
-            taskStateService.cancelProcessingTask(id);
-        } catch (ForbiddenOperationServiceException e) {
-            throw new ForbiddenOperationException();
-        } catch (EntityDoesNotExistServiceException e) {
-            throw new EntityDoesNotExistException();
-        }
+        taskStateService.cancelProcessingTask(id);
         return this.mapperFacade.map(taskService.getTaskById(id).get(), TaskDTO.class);
     }
 }
