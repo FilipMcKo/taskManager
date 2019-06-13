@@ -53,9 +53,6 @@ class TaskControllerTest {
         //then
         assertAll(() -> assertTrue(taskDTOList.contains(taskDTO1)),
                 () -> assertTrue(taskDTOList.contains(taskDTO2)));
-
-        taskController.removeTaskById(id1);
-        taskController.removeTaskById(id2);
     }
 
     @Test
@@ -70,8 +67,6 @@ class TaskControllerTest {
         //then
         assertAll(() -> assertEquals(taskCreationRequest.getName(), taskDTO.getName()),
                 () -> assertEquals(taskDTO.getDescription(), taskDTO.getDescription()));
-
-        taskController.removeTaskById(id);
     }
 
     @Test
@@ -98,8 +93,6 @@ class TaskControllerTest {
 
         //then
         assertNotNull(taskController.getTaskById(id));
-
-        taskController.removeTaskById(id);
     }
 
     @Test
@@ -113,8 +106,6 @@ class TaskControllerTest {
 
         //then
         assertEquals("renamedTask", taskController.getTaskById(id).getName());
-
-        taskController.removeTaskById(id);
     }
 
     @Test
@@ -128,8 +119,6 @@ class TaskControllerTest {
 
         //then
         assertEquals(State.RUNNING, taskController.getTaskById(id).getCurrentState());
-
-        taskController.removeTaskById(id);
     }
 
     @Test
@@ -143,8 +132,6 @@ class TaskControllerTest {
 
         //then
         assertThrows(ForbiddenOperationServiceException.class, () -> taskController.startProcessingTask(id));
-
-        taskController.removeTaskById(id);
     }
 
     @Test
@@ -159,8 +146,6 @@ class TaskControllerTest {
 
         //then
         assertThrows(ForbiddenOperationServiceException.class, () -> taskController.startProcessingTask(id));
-
-        taskController.removeTaskById(id);
     }
 
     @Test
@@ -176,8 +161,6 @@ class TaskControllerTest {
 
         //then
         assertThrows(ForbiddenOperationServiceException.class, () -> taskController.startProcessingTask(id));
-
-        taskController.removeTaskById(id);
     }
 
     @Test
@@ -192,8 +175,6 @@ class TaskControllerTest {
 
         //then
         assertEquals(State.CANCELLED, taskController.getTaskById(id).getCurrentState());
-
-        taskController.removeTaskById(id);
     }
 
     @Test
@@ -206,8 +187,6 @@ class TaskControllerTest {
 
         //then
         assertThrows(ForbiddenOperationServiceException.class, () -> taskController.cancelProcessingTask(id));
-
-        taskController.removeTaskById(id);
     }
 
     @Test
@@ -222,8 +201,6 @@ class TaskControllerTest {
 
         //then
         assertThrows(ForbiddenOperationServiceException.class, () -> taskController.cancelProcessingTask(id));
-
-        taskController.removeTaskById(id);
     }
 
     @Test
@@ -239,8 +216,6 @@ class TaskControllerTest {
 
         //then
         assertThrows(ForbiddenOperationServiceException.class, () -> taskController.cancelProcessingTask(id));
-
-        taskController.removeTaskById(id);
     }
 
     @Test
