@@ -21,4 +21,5 @@ public class Task implements Serializable {
     private State currentState;
     private Double progressPercentage;
     private Long taskBeginTime;
+    private Long customDuration;
 }

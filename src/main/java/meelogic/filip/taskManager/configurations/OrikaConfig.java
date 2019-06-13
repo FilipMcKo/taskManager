@@ -13,7 +13,7 @@ public class OrikaConfig {
     @Bean
     public MapperFacade getMapperFacade() {
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        mapperFactory.classMap(Task.class, TaskDTO.class).exclude("taskBeginTime").byDefault().register();
+        mapperFactory.classMap(Task.class, TaskDTO.class).exclude("taskBeginTime").exclude("customDuration").byDefault().register();
         return mapperFactory.getMapperFacade();
     }
 }

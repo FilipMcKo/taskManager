@@ -40,8 +40,8 @@ class TaskControllerTest {
     @Test
     void shouldGetAllTasks() {
         //given
-        TaskCreationRequest taskCreationRequest1 = new TaskCreationRequest("getAllTestTask1", "shouldGetAllTasks");
-        TaskCreationRequest taskCreationRequest2 = new TaskCreationRequest("getAllTestTask2", "shouldGetAllTasks");
+        TaskCreationRequest taskCreationRequest1 = new TaskCreationRequest("getAllTestTask1", "shouldGetAllTasks", 1000l);
+        TaskCreationRequest taskCreationRequest2 = new TaskCreationRequest("getAllTestTask2", "shouldGetAllTasks", 1000l);
 
         //when
         Integer id1 = taskController.addNewTask(taskCreationRequest1).getBody().getId();
@@ -58,7 +58,7 @@ class TaskControllerTest {
     @Test
     void shouldGetTaskById() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("getTestTask", "shouldGetTaskById");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("getTestTask", "shouldGetTaskById", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -72,7 +72,7 @@ class TaskControllerTest {
     @Test
     void shouldDeleteTaskById() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("deleteTestTask", "shouldDeleteTaskById");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("deleteTestTask", "shouldDeleteTaskById", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -86,7 +86,7 @@ class TaskControllerTest {
     @Test
     void shouldCreateNewTask() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("createNewTestTask", "shouldCreateNewTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("createNewTestTask", "shouldCreateNewTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -98,7 +98,7 @@ class TaskControllerTest {
     @Test
     void shouldRenameTask() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("renameTestTask", "shouldRenameTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("renameTestTask", "shouldRenameTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -111,7 +111,7 @@ class TaskControllerTest {
     @Test
     void shouldStartTask() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldStartTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldStartTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -124,7 +124,7 @@ class TaskControllerTest {
     @Test
     void shouldntAllowToStartRunningTask() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldntAllowToStartRunningTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldntAllowToStartRunningTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -137,7 +137,7 @@ class TaskControllerTest {
     @Test
     void shouldtAllowToStartCancelledTask() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldtAllowToStartCancelledTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldtAllowToStartCancelledTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -151,7 +151,7 @@ class TaskControllerTest {
     @Test
     void shouldtAllowToStartFinishedTask() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldtAllowToStartFinishedTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("startTestTask", "shouldtAllowToStartFinishedTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -166,7 +166,7 @@ class TaskControllerTest {
     @Test
     void shouldCancellTask() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldCancellTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldCancellTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -180,7 +180,7 @@ class TaskControllerTest {
     @Test
     void shouldntAllowToCancelNewTask() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldntAllowToCancelNewTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldntAllowToCancelNewTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -192,7 +192,7 @@ class TaskControllerTest {
     @Test
     void shouldntAllowToCancelCancelledTask() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldntAllowToCancelCancelledTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldntAllowToCancelCancelledTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -206,7 +206,7 @@ class TaskControllerTest {
     @Test
     void shouldtAllowToCancelFinishedTask() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldtAllowToCancelFinishedTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldtAllowToCancelFinishedTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();
@@ -221,7 +221,7 @@ class TaskControllerTest {
     @Test
     void shouldThrowEntityDoesNotExistExceptionForAllOperations() {
         //given
-        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldtAllowToCancelFinishedTask");
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest("cancelTestTask", "shouldtAllowToCancelFinishedTask", 1000l);
 
         //when
         Integer id = taskController.addNewTask(taskCreationRequest).getBody().getId();

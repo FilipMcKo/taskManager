@@ -32,17 +32,17 @@ class ScheduledTaskProgressServiceTest {
 
     @BeforeEach
     void setUp() {
-        task1 = new Task(1, "Task1", "Sample task nr one", State.RUNNING, 0.0, null);
-        task2 = new Task(2, "Task2", "Sample task nr two", State.RUNNING, 0.0, null);
-        task3 = new Task(3, "Task3", "Sample task nr three", State.RUNNING, 0.0, null);
-        task4 = new Task(4, "Task4", "Sample task nr four", State.RUNNING, 0.0, null);
+        task1 = new Task(1, "Task1", "Sample task nr one", State.RUNNING, 0.0, null,1000l);
+        task2 = new Task(2, "Task2", "Sample task nr two", State.RUNNING, 0.0, null,1000l);
+        task3 = new Task(3, "Task3", "Sample task nr three", State.RUNNING, 0.0, null,1000l);
+        task4 = new Task(4, "Task4", "Sample task nr four", State.RUNNING, 0.0, null,1000l);
         taskList = new LinkedList<>(Arrays.asList(task1, task2, task3));
         MockitoAnnotations.initMocks(this);
         Mockito.when(taskRepositoryMock.findAll()).thenReturn(this.taskList);
-        task1.setTaskBeginTime(Instant.now().toEpochMilli() - scheduledTaskProgressService.getTaskDuration() / 2);
-        task2.setTaskBeginTime(Instant.now().toEpochMilli() - scheduledTaskProgressService.getTaskDuration() / 4);
+        task1.setTaskBeginTime(Instant.now().toEpochMilli() - task1.getCustomDuration() / 2);
+        task2.setTaskBeginTime(Instant.now().toEpochMilli() - task2.getCustomDuration() / 4);
         task3.setTaskBeginTime(Instant.now().toEpochMilli());
-        task4.setTaskBeginTime(Instant.now().toEpochMilli() - 2 * scheduledTaskProgressService.getTaskDuration());
+        task4.setTaskBeginTime(Instant.now().toEpochMilli() - 2 * task4.getCustomDuration());
     }
 
     @Test

@@ -24,13 +24,8 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Page<Task> getAllTasksPaged(Pageable pageable){
-        return taskRepository.findAll(pageable);
-    }
-
     public Page<Task> getAllTasksPagedAndSorted(Pageable pageable) {
         return taskRepository.findAll(pageable);
-
     }
 
     public Optional<Task> getTaskById(Integer id) {
@@ -49,6 +44,7 @@ public class TaskService {
         task.setDescription(taskCreationRequest.getDescription());
         task.setCurrentState(State.NEW);
         task.setProgressPercentage(0.0);
+        task.setCustomDuration(taskCreationRequest.getCustomDuration());
         return this.taskRepository.save(task);
     }
 
