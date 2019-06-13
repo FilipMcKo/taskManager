@@ -1,15 +1,11 @@
 package meelogic.filip.taskManager.controllers;
 
 import ma.glasnost.orika.MapperFacade;
-import meelogic.filip.taskManager.controllers.responseStatusExceptions.EntityDoesNotExistException;
-import meelogic.filip.taskManager.controllers.responseStatusExceptions.ForbiddenOperationException;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
 import meelogic.filip.taskManager.entities.external.TaskDTO;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.TaskService;
 import meelogic.filip.taskManager.services.TaskStateService;
-import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistServiceException;
-import meelogic.filip.taskManager.services.exceptions.ForbiddenOperationServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
