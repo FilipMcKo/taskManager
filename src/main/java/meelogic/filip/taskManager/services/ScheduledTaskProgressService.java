@@ -20,11 +20,7 @@ public class ScheduledTaskProgressService {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Autowired
-    private TaskQueueService taskQueueService;
-
-
-    public void updateTaskProgress(Task task)  {
+    public void updateTaskProgress(Task task) {
         if (task.getCurrentState() != State.RUNNING) {
             return;
         }
@@ -32,7 +28,6 @@ public class ScheduledTaskProgressService {
         if (currentDuration >= task.getCustomDuration()) {
             task.setCurrentState(State.FINISHED);
             task.setProgressPercentage(100.0);
-            taskQueueService.publishMessage();
         } else {
             double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) task.getCustomDuration() * 100)
                     .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();

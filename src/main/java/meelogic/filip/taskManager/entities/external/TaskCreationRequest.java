@@ -14,4 +14,5 @@ public class TaskCreationRequest {
     String name;
     String description;
     Long customDuration;
+    String taskPriority;
 }

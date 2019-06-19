@@ -16,18 +16,10 @@ public class TaskQueueService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-
-//    public void publishMessage() {
-//        this.rabbitTemplate.convertAndSend("","message from taskManager");
-//    }
-
-    public void publishMessage() {
-        this.rabbitTemplate.convertAndSend("myExchange","","message from taskManager", new MessagePostProcessor() {
-            @Override
-            public Message postProcessMessage(Message message) throws AmqpException {
-                message.getMessageProperties().setPriority(1);
-                return message;
-            }
+    public void publishMessage(Integer id) {
+        this.rabbitTemplate.convertAndSend("myExchange", "", id.toString(), message -> {
+            message.getMessageProperties().setPriority(id % 3);
+            return message;
         });
     }
 

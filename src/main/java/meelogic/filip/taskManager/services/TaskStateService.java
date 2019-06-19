@@ -15,8 +15,12 @@ import static meelogic.filip.taskManager.services.exceptions.OperationStatus.*;
 
 @Service
 public class TaskStateService {
+
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private TaskQueueService taskQueueService;
 
     public void startProcessingTask(Integer id) {
         Optional<Task> optTask = taskRepository.findById(id);
@@ -26,15 +30,16 @@ public class TaskStateService {
     }
 
     private void startProcessingTask(Task task) {
-        task.setTaskBeginTime(Instant.now().toEpochMilli());
-        task.setCurrentState(State.RUNNING);
+        //task.setTaskBeginTime(Instant.now().toEpochMilli());
+        task.setCurrentState(PENDING);
         taskRepository.save(task);
+        taskQueueService.publishMessage(task.getId());
     }
 
     public void cancelProcessingTask(Integer id) {
         Optional<Task> optTask = taskRepository.findById(id);
         Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
-        Preconditions.checkArgument(optTask.get().getCurrentState() == RUNNING, FORBIDDEN_OPERATION);
+        Preconditions.checkArgument(optTask.get().getCurrentState() == RUNNING || optTask.get().getCurrentState() == PENDING, FORBIDDEN_OPERATION);
         optTask.ifPresent(this::cancelProcessingTask);
     }
 

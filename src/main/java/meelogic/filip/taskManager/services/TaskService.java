@@ -1,5 +1,6 @@
 package meelogic.filip.taskManager.services;
 
+import meelogic.filip.taskManager.entities.internal.TaskPriority;
 import meelogic.filip.taskManager.services.exceptions.OperationStatus;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
@@ -44,6 +45,7 @@ public class TaskService {
         task.setCurrentState(State.NEW);
         task.setProgressPercentage(0.0);
         task.setCustomDuration(taskCreationRequest.getCustomDuration());
+        task.setPriority(TaskPriority.valueOf(taskCreationRequest.getTaskPriority()));
         return this.taskRepository.save(task);
     }
 

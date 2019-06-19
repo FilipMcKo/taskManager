@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.amqp.core.AcknowledgeMode.MANUAL;
+
 @Configuration
 public class RabbitMqConfig {
     private static final String QUEUE_NAME = "myQueue";
@@ -18,7 +20,7 @@ public class RabbitMqConfig {
     @Bean
     Queue queue() {
         Map<String, Object> args = new HashMap();
-        args.put("x-max-priority", 3);
+        args.put("x-max-priority", 10);
         return new Queue(QUEUE_NAME, true, false,false, args);
     }
 
@@ -39,11 +41,13 @@ public class RabbitMqConfig {
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(QUEUE_NAME);
         container.setMessageListener(listenerAdapter);
+        container.setConcurrentConsumers(1);
+        container.setConcurrency("1");
         return container;
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(TestReceiver receiver) {
+    MessageListenerAdapter listenerAdapter(TestReceiver receiver) throws InterruptedException {
         return new MessageListenerAdapter(receiver, "receiveMessage");
     }
 
