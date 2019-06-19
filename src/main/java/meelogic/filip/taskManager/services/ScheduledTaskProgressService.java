@@ -1,15 +1,18 @@
 package meelogic.filip.taskManager.services;
 
+import com.sun.glass.ui.Application;
+import meelogic.filip.taskManager.configurations.TestReceiver;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.entities.internal.TaskDuration;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class ScheduledTaskProgressService {
@@ -20,7 +23,8 @@ public class ScheduledTaskProgressService {
     @Autowired
     private TaskQueueService taskQueueService;
 
-    public void updateTaskProgress(Task task) {
+
+    public void updateTaskProgress(Task task)  {
         if (task.getCurrentState() != State.RUNNING) {
             return;
         }
@@ -28,7 +32,7 @@ public class ScheduledTaskProgressService {
         if (currentDuration >= task.getCustomDuration()) {
             task.setCurrentState(State.FINISHED);
             task.setProgressPercentage(100.0);
-            //taskQueueService.publishToQueue(task);
+            taskQueueService.publishMessage();
         } else {
             double currentPercentage = BigDecimal.valueOf((double) currentDuration / (double) task.getCustomDuration() * 100)
                     .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
