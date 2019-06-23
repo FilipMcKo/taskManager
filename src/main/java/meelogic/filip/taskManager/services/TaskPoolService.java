@@ -1,33 +1,34 @@
 package meelogic.filip.taskManager.services;
 
-import com.sun.glass.ui.Application;
-import meelogic.filip.taskManager.configurations.TestReceiver;
+import com.rabbitmq.client.AMQP;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-@Deprecated
 @Service
-public class ScheduledTaskProgressService {
+public class TaskPoolService {
+    private List<Task> taskPool = new LinkedList<>();
+    private final int maxPoolSize = 5;
+
+    @Autowired
+    private AMQP.Channel channel;
 
     @Autowired
     private TaskRepository taskRepository;
 
+
     public void updateTaskProgress(Task task) {
-        if (task.getCurrentState() != State.RUNNING) {
-            return;
-        }
+        //ta metoda powinna przeliczac stan taskow w taskPool i zapisywac wynik w prawdziwej bazie
         long currentDuration = Instant.now().toEpochMilli() - task.getTaskBeginTime();
         if (currentDuration >= task.getCustomDuration()) {
             task.setCurrentState(State.FINISHED);
@@ -40,16 +41,21 @@ public class ScheduledTaskProgressService {
         taskRepository.save(task);
     }
 
+    private void updateTaskPool() {
+        for (Task task : taskPool) {
+            if(task.getCurrentState()==State.FINISHED){
+                taskPool.remove(task);
+            }
+        }
 
-    @Scheduled(fixedDelay = 1000)
-    void updateTasksProgress() {
-        taskRepository.findAll().forEach(this::updateTaskProgress);
+        if(taskPool.size()<maxPoolSize){
+
+        }
     }
 
     @Scheduled(fixedDelay = 1000)
     void updateTaskPoolProgress(){
-        //tutaj na każdym obiekcie w tasksPool muszę wywołać metodę updateTaskProgress
+        taskPool.forEach(this::updateTaskProgress);
+        updateTaskPool();
     }
-
-
 }

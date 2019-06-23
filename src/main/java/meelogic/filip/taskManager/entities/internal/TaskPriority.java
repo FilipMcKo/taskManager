@@ -9,7 +9,8 @@ public enum TaskPriority {
         this.priority = priority;
     }
 
-    public long getPriority() {
+    public Integer getPriorityAsInteger() {
         return this.priority;
     }
+
 }

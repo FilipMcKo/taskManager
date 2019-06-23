@@ -7,7 +7,6 @@ import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import static meelogic.filip.taskManager.entities.internal.State.*;
@@ -33,7 +32,7 @@ public class TaskStateService {
         //task.setTaskBeginTime(Instant.now().toEpochMilli());
         task.setCurrentState(PENDING);
         taskRepository.save(task);
-        taskQueueService.publishMessage(task.getId());
+        taskQueueService.sendMessage(task.getId(), task.getPriority().getPriorityAsInteger());
     }
 
     public void cancelProcessingTask(Integer id) {

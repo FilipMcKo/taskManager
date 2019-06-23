@@ -14,4 +14,5 @@ public class TaskDTO {
     private String description;
     private State currentState;
     private Double progressPercentage;
+    private String priority;
 }

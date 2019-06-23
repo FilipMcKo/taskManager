@@ -2,6 +2,7 @@ package meelogic.filip.taskManager.services;
 
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
+import meelogic.filip.taskManager.entities.internal.TaskPriority;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,10 +33,10 @@ class ScheduledTaskProgressServiceTest {
 
     @BeforeEach
     void setUp() {
-        task1 = new Task(1, "Task1", "Sample task nr one", State.RUNNING, 0.0, null,1000l);
-        task2 = new Task(2, "Task2", "Sample task nr two", State.RUNNING, 0.0, null,1000l);
-        task3 = new Task(3, "Task3", "Sample task nr three", State.RUNNING, 0.0, null,1000l);
-        task4 = new Task(4, "Task4", "Sample task nr four", State.RUNNING, 0.0, null,1000l);
+        task1 = new Task(1, "Task1", "Sample task nr one", State.RUNNING, 0.0, null,1000l, TaskPriority.HIGH);
+        task2 = new Task(2, "Task2", "Sample task nr two", State.RUNNING, 0.0, null,1000l, TaskPriority.HIGH);
+        task3 = new Task(3, "Task3", "Sample task nr three", State.RUNNING, 0.0, null,1000l, TaskPriority.HIGH);
+        task4 = new Task(4, "Task4", "Sample task nr four", State.RUNNING, 0.0, null,1000l, TaskPriority.HIGH);
         taskList = new LinkedList<>(Arrays.asList(task1, task2, task3));
         MockitoAnnotations.initMocks(this);
         Mockito.when(taskRepositoryMock.findAll()).thenReturn(this.taskList);
