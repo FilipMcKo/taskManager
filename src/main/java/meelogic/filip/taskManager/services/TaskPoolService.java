@@ -1,19 +1,20 @@
 package meelogic.filip.taskManager.services;
 
-import com.rabbitmq.client.AMQP;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.services.repository.TaskRepository;
-import org.springframework.amqp.core.Queue;
+import meelogic.filip.taskManager.services.exceptions.Preconditions;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+
+import static meelogic.filip.taskManager.services.exceptions.OperationStatus.ENTITY_NOT_FOUND;
 
 @Service
 public class TaskPoolService {
@@ -21,14 +22,10 @@ public class TaskPoolService {
     private final int maxPoolSize = 5;
 
     @Autowired
-    private AMQP.Channel channel;
-
-    @Autowired
-    private TaskRepository taskRepository;
+    private TaskService taskService;
 
 
     public void updateTaskProgress(Task task) {
-        //ta metoda powinna przeliczac stan taskow w taskPool i zapisywac wynik w prawdziwej bazie
         long currentDuration = Instant.now().toEpochMilli() - task.getTaskBeginTime();
         if (currentDuration >= task.getCustomDuration()) {
             task.setCurrentState(State.FINISHED);
@@ -47,15 +44,20 @@ public class TaskPoolService {
                 taskPool.remove(task);
             }
         }
-
-        if(taskPool.size()<maxPoolSize){
-
-        }
     }
 
     @Scheduled(fixedDelay = 1000)
     void updateTaskPoolProgress(){
         taskPool.forEach(this::updateTaskProgress);
         updateTaskPool();
+    }
+
+    @RabbitListener(queues = "myQueue")
+    public void receive(String in) {
+        if(taskPool.size()<maxPoolSize){
+            Optional<Task> optTask = taskService.getTaskById(Integer.valueOf(in));
+            Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
+            taskPool.add(optTask.get());
+        }
     }
 }
