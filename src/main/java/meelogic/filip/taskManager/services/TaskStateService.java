@@ -7,6 +7,7 @@ import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import static meelogic.filip.taskManager.entities.internal.State.*;
@@ -21,18 +22,24 @@ public class TaskStateService {
     @Autowired
     private TaskQueueService taskQueueService;
 
-    public void startProcessingTask(Integer id) {
+    public void putTaskOnQueue(Integer id) {
         Optional<Task> optTask = taskRepository.findById(id);
         Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
         Preconditions.checkArgument(optTask.get().getCurrentState() == NEW, FORBIDDEN_OPERATION);
-        optTask.ifPresent(this::startProcessingTask);
+        optTask.ifPresent(this::putTaskOnQueue);
     }
 
-    private void startProcessingTask(Task task) {
+    private void putTaskOnQueue(Task task) {
         //task.setTaskBeginTime(Instant.now().toEpochMilli());
         task.setCurrentState(PENDING);
         taskRepository.save(task);
         taskQueueService.sendMessage(task.getId(), task.getPriority().getPriorityAsInteger());
+    }
+
+    public void startProcessingTask(Task task){
+        task.setTaskBeginTime(Instant.now().toEpochMilli());
+        task.setCurrentState(RUNNING);
+        taskRepository.save(task);
     }
 
     public void cancelProcessingTask(Integer id) {

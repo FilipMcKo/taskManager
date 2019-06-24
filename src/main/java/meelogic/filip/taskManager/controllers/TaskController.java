@@ -100,7 +100,7 @@ public class TaskController {
             percentiles = {0.95, 0.99})
     @PutMapping("/tasks/{id}/start")
     public TaskDTO startProcessingTask(@PathVariable Integer id) {
-        taskStateService.startProcessingTask(id);
+        taskStateService.putTaskOnQueue(id);
         this.requestStartTask.inc();
         return this.mapperFacade.map(taskService.getTaskById(id).get(), TaskDTO.class);
     }

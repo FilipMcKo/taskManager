@@ -15,15 +15,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import static meelogic.filip.taskManager.entities.internal.State.RUNNING;
 import static meelogic.filip.taskManager.services.exceptions.OperationStatus.ENTITY_NOT_FOUND;
 
 @Service
 public class TaskPoolService {
     private List<Task> taskPool = new LinkedList<>();
     private final int maxPoolSize = 5;
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private TaskRepository taskRepository;
@@ -61,10 +59,11 @@ public class TaskPoolService {
     @RabbitListener(queues = "myQueue")
     public void receive(String in) {
         if (taskPool.size() < maxPoolSize) {
-            Optional<Task> optTask = taskService.getTaskById(Integer.valueOf(in));
+            Optional<Task> optTask = taskRepository.findById(Integer.valueOf(in));
             Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
             Task task = optTask.get();
-            task.setCurrentState(State.RUNNING);
+            task.setTaskBeginTime(Instant.now().toEpochMilli());
+            task.setCurrentState(RUNNING);
             taskRepository.save(task);
             taskPool.add(task);
         }
