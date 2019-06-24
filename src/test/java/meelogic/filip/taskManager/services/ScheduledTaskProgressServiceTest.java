@@ -29,7 +29,7 @@ class ScheduledTaskProgressServiceTest {
     @Mock
     private TaskRepository taskRepositoryMock;
     @InjectMocks
-    private ScheduledTaskProgressService scheduledTaskProgressService;
+    private TaskPoolService taskPoolService;
 
     @BeforeEach
     void setUp() {
@@ -48,16 +48,16 @@ class ScheduledTaskProgressServiceTest {
 
     @Test
     void shouldUpdateSingleTaskProgress() {
-        scheduledTaskProgressService.updateTaskProgress(task1);
+        taskPoolService.updateTaskProgress(task1);
         double progressPercentage1 = task1.getProgressPercentage();
 
-        scheduledTaskProgressService.updateTaskProgress(task2);
+        taskPoolService.updateTaskProgress(task2);
         double progressPercentage2 = task2.getProgressPercentage();
 
-        scheduledTaskProgressService.updateTaskProgress(task3);
+        taskPoolService.updateTaskProgress(task3);
         double progressPercentage3 = task3.getProgressPercentage();
 
-        scheduledTaskProgressService.updateTaskProgress(task4);
+        taskPoolService.updateTaskProgress(task4);
         double progressPercentage4 = task4.getProgressPercentage();
 
         assertAll(() -> assertTrue(50.0 <= progressPercentage1 && progressPercentage1 < 55.0),
@@ -68,7 +68,7 @@ class ScheduledTaskProgressServiceTest {
 
     @Test
     void shouldUpdateAllTasksProgress() {
-        scheduledTaskProgressService.updateTasksProgress();
+        taskPoolService.updateTaskPoolProgress();
         double progressPercentage1 = task1.getProgressPercentage();
         double progressPercentage2 = task2.getProgressPercentage();
         double progressPercentage3 = task3.getProgressPercentage();

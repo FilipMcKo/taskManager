@@ -3,6 +3,7 @@ package meelogic.filip.taskManager.services;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.exceptions.Preconditions;
+import meelogic.filip.taskManager.services.repository.TaskRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,6 +25,9 @@ public class TaskPoolService {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
 
     public void updateTaskProgress(Task task) {
         long currentDuration = Instant.now().toEpochMilli() - task.getTaskBeginTime();
@@ -40,24 +44,29 @@ public class TaskPoolService {
 
     private void updateTaskPool() {
         for (Task task : taskPool) {
-            if(task.getCurrentState()==State.FINISHED){
+            if (task.getCurrentState() == State.FINISHED) {
                 taskPool.remove(task);
             }
         }
     }
 
     @Scheduled(fixedDelay = 1000)
-    void updateTaskPoolProgress(){
-        taskPool.forEach(this::updateTaskProgress);
-        updateTaskPool();
+    void updateTaskPoolProgress() {
+        if (!taskPool.isEmpty()) {
+            taskPool.forEach(this::updateTaskProgress);
+            updateTaskPool();
+        }
     }
 
     @RabbitListener(queues = "myQueue")
     public void receive(String in) {
-        if(taskPool.size()<maxPoolSize){
+        if (taskPool.size() < maxPoolSize) {
             Optional<Task> optTask = taskService.getTaskById(Integer.valueOf(in));
             Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
-            taskPool.add(optTask.get());
+            Task task = optTask.get();
+            task.setCurrentState(State.RUNNING);
+            taskRepository.save(task);
+            taskPool.add(task);
         }
     }
 }
