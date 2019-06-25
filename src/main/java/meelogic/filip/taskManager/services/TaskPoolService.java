@@ -1,31 +1,30 @@
 package meelogic.filip.taskManager.services;
 
+import com.rabbitmq.client.Channel;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
-import static meelogic.filip.taskManager.entities.internal.State.RUNNING;
-import static meelogic.filip.taskManager.services.exceptions.OperationStatus.ENTITY_NOT_FOUND;
+import java.util.*;
 
 @Service
 public class TaskPoolService {
     private List<Task> taskPool = new LinkedList<>();
     private final int maxPoolSize = 5;
+    private static final String QUEUE_NAME = "myQueue";
+    private static final String FANOUT_EXCHANGE = "myExchange";
+
+    @Autowired
+    private Channel channel;
 
     @Autowired
     private TaskRepository taskRepository;
-
 
     public void updateTaskProgress(Task task) {
         long currentDuration = Instant.now().toEpochMilli() - task.getTaskBeginTime();
@@ -48,24 +47,14 @@ public class TaskPoolService {
         }
     }
 
-    @Scheduled(fixedDelay = 1000)
-    void updateTaskPoolProgress() {
-        if (!taskPool.isEmpty()) {
-            taskPool.forEach(this::updateTaskProgress);
-            updateTaskPool();
-        }
+    @Scheduled(fixedDelay = 300)
+    void updateTaskPoolProgress() throws IOException {
+//        if (!taskPool.isEmpty()) {
+//            taskPool.forEach(this::updateTaskProgress);
+//            updateTaskPool();
+//        }
+        System.out.println("basicGet");
+        channel.basicGet(QUEUE_NAME, true);
     }
 
-    @RabbitListener(queues = "myQueue")
-    public void receive(String in) {
-        if (taskPool.size() < maxPoolSize) {
-            Optional<Task> optTask = taskRepository.findById(Integer.valueOf(in));
-            Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
-            Task task = optTask.get();
-            task.setTaskBeginTime(Instant.now().toEpochMilli());
-            task.setCurrentState(RUNNING);
-            taskRepository.save(task);
-            taskPool.add(task);
-        }
-    }
 }

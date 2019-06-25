@@ -1,12 +1,18 @@
 package meelogic.filip.taskManager.services;
 
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.BasicProperties;
+import com.rabbitmq.client.Channel;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
 import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -20,27 +26,37 @@ public class TaskStateService {
     private TaskRepository taskRepository;
 
     @Autowired
-    private TaskQueueService taskQueueService;
+    private Channel channel;
+
+    @Qualifier("getFanoutExchange")
+    @Autowired
+    private String fanoutExchange;
+
+    @Qualifier("getQueueName")
+    @Autowired
+    private String queue;
 
     public void putTaskOnQueue(Integer id) {
         Optional<Task> optTask = taskRepository.findById(id);
         Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
         Preconditions.checkArgument(optTask.get().getCurrentState() == NEW, FORBIDDEN_OPERATION);
-        optTask.ifPresent(this::putTaskOnQueue);
+        optTask.ifPresent(task -> {
+            try {
+                putTaskOnQueue(task);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    private void putTaskOnQueue(Task task) {
-        //task.setTaskBeginTime(Instant.now().toEpochMilli());
+    private void putTaskOnQueue(Task task) throws IOException {
         task.setCurrentState(PENDING);
         taskRepository.save(task);
-        taskQueueService.sendMessage(task.getId(), task.getPriority().getPriorityAsInteger());
+        AMQP.BasicProperties.Builder basicProps = new AMQP.BasicProperties.Builder();
+        basicProps.priority(task.getPriority().getPriorityAsInteger());
+        channel.basicPublish(fanoutExchange, queue, basicProps.build(), BigInteger.valueOf(task.getId()).toByteArray());
     }
 
-    public void startProcessingTask(Task task){
-        task.setTaskBeginTime(Instant.now().toEpochMilli());
-        task.setCurrentState(RUNNING);
-        taskRepository.save(task);
-    }
 
     public void cancelProcessingTask(Integer id) {
         Optional<Task> optTask = taskRepository.findById(id);
@@ -50,7 +66,7 @@ public class TaskStateService {
     }
 
     private void cancelProcessingTask(Task task) {
-        task.setCurrentState(State.CANCELLED);
+        task.setCurrentState(CANCELLED);
         task.setProgressPercentage(0.0);
         task.setTaskBeginTime(null);
         taskRepository.save(task);

@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -67,7 +68,7 @@ class ScheduledTaskProgressServiceTest {
     }
 
     @Test
-    void shouldUpdateAllTasksProgress() {
+    void shouldUpdateAllTasksProgress() throws IOException {
         taskPoolService.updateTaskPoolProgress();
         double progressPercentage1 = task1.getProgressPercentage();
         double progressPercentage2 = task2.getProgressPercentage();
