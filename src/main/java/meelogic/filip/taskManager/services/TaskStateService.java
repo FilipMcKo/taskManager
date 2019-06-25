@@ -1,10 +1,8 @@
 package meelogic.filip.taskManager.services;
 
 import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.BasicProperties;
 import com.rabbitmq.client.Channel;
 import meelogic.filip.taskManager.services.repository.TaskRepository;
-import meelogic.filip.taskManager.entities.internal.State;
 import meelogic.filip.taskManager.entities.internal.Task;
 import meelogic.filip.taskManager.services.exceptions.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.time.Instant;
 import java.util.Optional;
 
 import static meelogic.filip.taskManager.entities.internal.State.*;
@@ -53,8 +49,9 @@ public class TaskStateService {
         task.setCurrentState(PENDING);
         taskRepository.save(task);
         AMQP.BasicProperties.Builder basicProps = new AMQP.BasicProperties.Builder();
-        basicProps.priority(task.getPriority().getPriorityAsInteger());
-        channel.basicPublish(fanoutExchange, queue, basicProps.build(), BigInteger.valueOf(task.getId()).toByteArray());
+        basicProps.contentType("text/plain").priority(task.getPriority().getPriorityAsInteger());
+        byte[] message = task.getId().toString().getBytes();
+        channel.basicPublish(fanoutExchange, queue, basicProps.build(), message);
     }
 
 

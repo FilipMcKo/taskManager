@@ -1,18 +1,14 @@
 package meelogic.filip.taskManager.configurations;
 
-
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
-
-
 import com.rabbitmq.client.ConnectionFactory;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
 @Configuration
 public class RabbitMqConfig {
@@ -46,13 +42,9 @@ public class RabbitMqConfig {
             channel.queueBind(QUEUE_NAME, FANOUT_EXCHANGE, "");
             channel.basicQos(1, true);
         } catch (Exception e) {
-            System.out.println("wybuchlo!");
             e.printStackTrace();
         }
         return channel;
     }
 
-/*
-    na koniec pamiętać o testach
-*/
 }
