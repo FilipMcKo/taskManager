@@ -1,0 +1,1 @@
+insert into task (name, current_state, custom_duration, priority) values ('ITask','NEW',10000, 3);
