@@ -16,13 +16,13 @@ import java.util.logging.Logger;
 
 import javassist.bytecode.stackmap.TypeData.ClassName;
 
-@Profile("!test")
+@Profile("test")
 @Configuration
-public class RabbitMqConfig {
+public class RabbitMqConfigForTest {
 
     private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-    private static final String QUEUE_NAME = "myQueue";
-    private static final String FANOUT_EXCHANGE = "myExchange";
+    private static final String QUEUE_NAME = "myQueueTest";
+    private static final String FANOUT_EXCHANGE = "myExchangeTest";
 
     @Bean
     public String getQueueName() {

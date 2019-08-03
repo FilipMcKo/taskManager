@@ -1,7 +1,7 @@
-package meelogic.filip.taskManager.controllers;
+package meelogic.filip.taskmanager.controllers;
 
-import meelogic.filip.taskManager.services.exceptions.EntityDoesNotExistServiceException;
-import meelogic.filip.taskManager.services.exceptions.ForbiddenOperationServiceException;
+import meelogic.filip.taskmanager.services.exceptions.EntityDoesNotExistServiceException;
+import meelogic.filip.taskmanager.services.exceptions.ForbiddenOperationServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

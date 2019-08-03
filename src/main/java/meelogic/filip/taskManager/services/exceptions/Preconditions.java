@@ -1,6 +1,10 @@
-package meelogic.filip.taskManager.services.exceptions;
+package meelogic.filip.taskmanager.services.exceptions;
 
 public class Preconditions {
+
+    private Preconditions() {
+    }
+
     public static void checkArgument(boolean expression, OperationStatus operationStatus) {
         if (!expression) {
             if (operationStatus == OperationStatus.ENTITY_NOT_FOUND) {

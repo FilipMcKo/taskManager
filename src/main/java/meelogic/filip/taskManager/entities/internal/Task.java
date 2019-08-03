@@ -1,8 +1,6 @@
-package meelogic.filip.taskManager.entities.internal;
+package meelogic.filip.taskmanager.entities.internal;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,4 +20,5 @@ public class Task implements Serializable {
     private Double progressPercentage;
     private Long taskBeginTime;
     private Long customDuration;
+    private TaskPriority priority;
 }
