@@ -1,4 +1,4 @@
-package meelogic.filip.taskManager.entities.external;
+package meelogic.filip.taskmanager.entities.external;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

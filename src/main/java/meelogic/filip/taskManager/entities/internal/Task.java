@@ -1,4 +1,4 @@
-package meelogic.filip.taskManager.entities.internal;
+package meelogic.filip.taskmanager.entities.internal;
 
 import lombok.*;
 

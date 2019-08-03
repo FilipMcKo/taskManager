@@ -1,22 +1,30 @@
-package meelogic.filip.taskManager.services;
+package meelogic.filip.taskmanager.services;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
-import meelogic.filip.taskManager.services.repository.TaskRepository;
-import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.services.exceptions.Preconditions;
+
+import javassist.bytecode.stackmap.TypeData.ClassName;
+import meelogic.filip.taskmanager.services.repository.TaskRepository;
+import meelogic.filip.taskmanager.entities.internal.Task;
+import meelogic.filip.taskmanager.services.exceptions.Preconditions;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import static meelogic.filip.taskManager.entities.internal.State.*;
-import static meelogic.filip.taskManager.services.exceptions.OperationStatus.*;
+import static meelogic.filip.taskmanager.entities.internal.State.*;
+import static meelogic.filip.taskmanager.services.exceptions.OperationStatus.*;
 
 @Service
 public class TaskStateService {
+
+    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
 
     @Autowired
     private TaskRepository taskRepository;
@@ -40,7 +48,7 @@ public class TaskStateService {
             try {
                 putTaskOnQueue(task);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
             }
         });
     }
@@ -58,7 +66,9 @@ public class TaskStateService {
     public void cancelProcessingTask(Integer id) {
         Optional<Task> optTask = taskRepository.findById(id);
         Preconditions.checkArgument(optTask.isPresent(), ENTITY_NOT_FOUND);
-        Preconditions.checkArgument(optTask.get().getCurrentState() == RUNNING || optTask.get().getCurrentState() == PENDING, FORBIDDEN_OPERATION);
+        Preconditions
+            .checkArgument(optTask.get().getCurrentState() == RUNNING || optTask.get().getCurrentState() == PENDING,
+                FORBIDDEN_OPERATION);
         optTask.ifPresent(this::cancelProcessingTask);
     }
 

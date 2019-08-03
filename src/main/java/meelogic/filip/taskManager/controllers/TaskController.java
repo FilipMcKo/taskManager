@@ -1,13 +1,13 @@
-package meelogic.filip.taskManager.controllers;
+package meelogic.filip.taskmanager.controllers;
 
 import io.micrometer.core.annotation.Timed;
 import io.prometheus.client.Counter;
 import ma.glasnost.orika.MapperFacade;
-import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
-import meelogic.filip.taskManager.entities.external.TaskDTO;
-import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.services.TaskService;
-import meelogic.filip.taskManager.services.TaskStateService;
+import meelogic.filip.taskmanager.entities.external.TaskCreationRequest;
+import meelogic.filip.taskmanager.entities.external.TaskDTO;
+import meelogic.filip.taskmanager.entities.internal.Task;
+import meelogic.filip.taskmanager.services.TaskService;
+import meelogic.filip.taskmanager.services.TaskStateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

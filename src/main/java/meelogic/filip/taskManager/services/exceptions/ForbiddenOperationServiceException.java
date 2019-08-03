@@ -1,4 +1,4 @@
-package meelogic.filip.taskManager.services.exceptions;
+package meelogic.filip.taskmanager.services.exceptions;
 
 public class ForbiddenOperationServiceException extends RuntimeException {
 }

@@ -1,6 +1,6 @@
-package meelogic.filip.taskManager.services.repository;
+package meelogic.filip.taskmanager.services.repository;
 
-import meelogic.filip.taskManager.entities.internal.Task;
+import meelogic.filip.taskmanager.entities.internal.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

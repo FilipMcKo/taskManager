@@ -1,4 +1,4 @@
-package meelogic.filip.taskManager.entities.internal;
+package meelogic.filip.taskmanager.entities.internal;
 
 public enum TaskPriority {
     LOW(3), HIGH(6);

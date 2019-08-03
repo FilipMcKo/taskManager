@@ -1,12 +1,13 @@
-package meelogic.filip.taskManager.services;
+package meelogic.filip.taskmanager.services;
 
-import meelogic.filip.taskManager.entities.internal.TaskPriority;
-import meelogic.filip.taskManager.services.exceptions.OperationStatus;
-import meelogic.filip.taskManager.services.repository.TaskRepository;
-import meelogic.filip.taskManager.entities.external.TaskCreationRequest;
-import meelogic.filip.taskManager.entities.internal.State;
-import meelogic.filip.taskManager.entities.internal.Task;
-import meelogic.filip.taskManager.services.exceptions.Preconditions;
+import meelogic.filip.taskmanager.entities.internal.TaskPriority;
+import meelogic.filip.taskmanager.services.exceptions.OperationStatus;
+import meelogic.filip.taskmanager.services.repository.TaskRepository;
+import meelogic.filip.taskmanager.entities.external.TaskCreationRequest;
+import meelogic.filip.taskmanager.entities.internal.State;
+import meelogic.filip.taskmanager.entities.internal.Task;
+import meelogic.filip.taskmanager.services.exceptions.Preconditions;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
