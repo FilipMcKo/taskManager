@@ -1,4 +1,4 @@
-package meelogic.filip.taskManager.entities.external;
+package meelogic.filip.taskmanager.entities.external;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,4 +14,5 @@ public class TaskCreationRequest {
     String name;
     String description;
     Long customDuration;
+    String taskPriority;
 }

@@ -1,1 +1,0 @@
-insert into task (name, current_state) values ('ITask','NEW');
