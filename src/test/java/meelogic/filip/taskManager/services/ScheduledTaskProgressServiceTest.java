@@ -42,14 +42,14 @@ class ScheduledTaskProgressServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        task1 = new Task(1, "Task1", "Sample task nr one", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH);
-        task2 = new Task(2, "Task2", "Sample task nr two", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH);
-        task3 = new Task(3, "Task3", "Sample task nr three", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH);
-        task4 = new Task(4, "Task4", "Sample task nr four", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH);
-        task5 = new Task(5, "Task5", "Sample task nr five", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH);
-        task6 = new Task(6, "Task6", "Sample task nr six", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH);
-        task7 = new Task(7, "Task7", "Sample task nr seven", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH);
-        task8 = new Task(8, "Task8", "Sample task nr eight", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH);
+        task1 = new Task(1, "Task1", "Sample task nr one", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH.getPriorityAsInteger());
+        task2 = new Task(2, "Task2", "Sample task nr two", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH.getPriorityAsInteger());
+        task3 = new Task(3, "Task3", "Sample task nr three", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH.getPriorityAsInteger());
+        task4 = new Task(4, "Task4", "Sample task nr four", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH.getPriorityAsInteger());
+        task5 = new Task(5, "Task5", "Sample task nr five", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH.getPriorityAsInteger());
+        task6 = new Task(6, "Task6", "Sample task nr six", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH.getPriorityAsInteger());
+        task7 = new Task(7, "Task7", "Sample task nr seven", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH.getPriorityAsInteger());
+        task8 = new Task(8, "Task8", "Sample task nr eight", State.RUNNING, 0.0, null, 100000l, TaskPriority.HIGH.getPriorityAsInteger());
         taskList = new LinkedList<>(Arrays.asList(task1, task2, task3, task4, task5, task6, task7, task8));
         Mockito.when(taskRepositoryMock.findAll()).thenReturn(this.taskList);
         ReflectionTestUtils.setField(taskPoolService, "taskPool", taskList);

@@ -46,7 +46,7 @@ public class TaskService {
         task.setCurrentState(State.NEW);
         task.setProgressPercentage(0.0);
         task.setCustomDuration(taskCreationRequest.getCustomDuration());
-        task.setPriority(TaskPriority.valueOf(taskCreationRequest.getTaskPriority()));
+        task.setPriority(TaskPriority.valueOf(taskCreationRequest.getTaskPriority()).getPriorityAsInteger());
         return this.taskRepository.save(task);
     }
 

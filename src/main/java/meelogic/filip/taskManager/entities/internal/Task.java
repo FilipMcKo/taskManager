@@ -20,5 +20,5 @@ public class Task implements Serializable {
     private Double progressPercentage;
     private Long taskBeginTime;
     private Long customDuration;
-    private TaskPriority priority;
+    private Integer priority;
 }

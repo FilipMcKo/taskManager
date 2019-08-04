@@ -57,7 +57,7 @@ public class TaskStateService {
         task.setCurrentState(PENDING);
         taskRepository.save(task);
         AMQP.BasicProperties.Builder basicProps = new AMQP.BasicProperties.Builder();
-        basicProps.contentType("text/plain").priority(task.getPriority().getPriorityAsInteger());
+        basicProps.contentType("text/plain").priority(task.getPriority());
         byte[] message = task.getId().toString().getBytes();
         channel.basicPublish(fanoutExchange, queue, basicProps.build(), message);
     }
